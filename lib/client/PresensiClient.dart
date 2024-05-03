@@ -6,15 +6,17 @@ class PresensiClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/api/presensi';
 
+  // static final String url = '192.168.245.167';
+  // static final String endpoint = '/AtmaKitchen_API/public/api/presensi';
+
   static Future<List<Presensi>> fetchAll() async {
     try {
-      var response = await get(
-        Uri.http(url, endpoint));
+      var response = await get(Uri.http(url, endpoint));
 
-        if(response.statusCode != 200) throw Exception(response.reasonPhrase);
+      if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
-        Iterable list = json.decode(response.body)['data'];
-        return list.map((e) => Presensi.fromJson(e)).toList();
+      Iterable list = json.decode(response.body)['data'];
+      return list.map((e) => Presensi.fromJson(e)).toList();
     } catch (e) {
       return Future.error(e.toString());
     }
@@ -23,8 +25,8 @@ class PresensiClient {
   static Future<Response> create(Presensi presensi) async {
     try {
       var response = await post(Uri.http(url, endpoint),
-      headers: {"Content-Type": "application/json"},
-      body: presensi.toRawJson());
+          headers: {"Content-Type": "application/json"},
+          body: presensi.toRawJson());
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
       return response;
@@ -35,9 +37,10 @@ class PresensiClient {
 
   static Future<Response> update(Presensi presensi) async {
     try {
-      var response = await put(Uri.http(url, '$endpoint/${presensi.ID_Presensi}'),
-      headers: {"Content-Type": "application/json"},
-      body: presensi.toRawJson());
+      var response = await put(
+          Uri.http(url, '$endpoint/${presensi.ID_Presensi}'),
+          headers: {"Content-Type": "application/json"},
+          body: presensi.toRawJson());
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
       return response;
@@ -45,5 +48,4 @@ class PresensiClient {
       return Future.error(e.toString());
     }
   }
-
 }

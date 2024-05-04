@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/entity/History.dart';
 import 'package:atma_kitchen/client/HistoryClient.dart';
+import 'package:atma_kitchen/client/SearchHistoryProductNameClient.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    futureHistory = PresensiClient.fetchAll();
+    futureHistory = HistoryClient.fetchAll();
   }
 
   @override
@@ -23,6 +24,14 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('History'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearchDialog(context);
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<History>>(
         future: futureHistory,
@@ -35,11 +44,9 @@ class _HistoryPageState extends State<HistoryPage> {
             return Center(child: Text('No data available'));
           }
 
-          // Filter history for customer with ID "CUS-001" and status "Selesai"
           List<History> customerHistory = snapshot.data!
               .where((history) =>
-                  history.ID_Customer == 'CUS-001' &&
-                  history.Status_Pemesanan == 'Selesai')
+                  history.ID_Customer == 'CUS-001')
               .toList();
 
           if (customerHistory.isEmpty) {
@@ -51,14 +58,55 @@ class _HistoryPageState extends State<HistoryPage> {
             itemBuilder: (context, index) {
               var history = customerHistory[index];
               return ListTile(
-                title: Text('Order ID: ${history.ID_Pemesanan}'),
+                title: Text('Nama Produk: ${history.ID_Pemesanan}'),
                 subtitle: Text('Total Amount: Rp ${history.Harga_Pesanan}'),
-                // Add more details if needed
               );
             },
           );
         },
       ),
     );
+  }
+
+  void showSearchDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Search by Product Name"),
+          content: TextField(
+            decoration: InputDecoration(
+              hintText: "Enter product name",
+            ),
+            onSubmitted: (productName) {
+              searchHistory(productName);
+              Navigator.pop(context);
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                final productName = '';
+                searchHistory(productName);
+                Navigator.pop(context);
+              },
+              child: Text("Clear"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void searchHistory(String productName) {
+    setState(() {
+      futureHistory = SearchHistoryProductNameClient.searchHistory(productName);
+    });
   }
 }

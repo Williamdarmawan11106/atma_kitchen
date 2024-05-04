@@ -17,7 +17,7 @@ class History {
   String Pengiriman;
   double Tip;
 
-  History ({
+  History({
     required this.ID_Pemesanan,
     required this.Jumlah_Pesanan,
     required this.Harga_Pesanan,
@@ -39,7 +39,7 @@ class History {
   factory History.fromJson(Map<String, dynamic> json) => History(
         ID_Pemesanan: json['ID_Pemesanan'],
         Jumlah_Pesanan: json['Jumlah_Pesanan'],
-        Harga_Pesanan: double.parse(json['Harga_Pesanan']),
+        Harga_Pesanan: double.parse(json['Harga_Pesanan'].toString()),
         Tanggal_Pesanan: DateTime.parse(json['Tanggal_Pesanan']),
         Tanggal_Diambil: DateTime.parse(json['Tanggal_Diambil']),
         Tanggal_Pembayaran: DateTime.parse(json['Tanggal_Pembayaran']),
@@ -51,7 +51,7 @@ class History {
         ID_PromoPoin: json['ID_PromoPoin'],
         ID_Detail_Pesanan: json['ID_Detail_Pesanan'],
         Pengiriman: json['Pengiriman'],
-        Tip: double.parse(json['Tip']),
+        Tip: double.parse(json['Tip'].toString()),
       );
 
   String toRawJson() => json.encode(toJson());

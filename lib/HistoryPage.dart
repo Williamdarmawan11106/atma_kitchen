@@ -15,7 +15,8 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    futureHistory = PresensiClient.fetchAll();
+    futureHistory = HistoryClient.fetchAll();
+    print(futureHistory);
   }
 
   @override

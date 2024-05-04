@@ -4,7 +4,9 @@ import 'package:atma_kitchen/entity/Customer.dart';
 import 'HistoryPage.dart'; // Import file history_page.dart yang berisi halaman HistoryPage
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({super.key, required this.id});
+
+  final String? id;
 
   @override
   _ProfileListState createState() => _ProfileListState();
@@ -16,7 +18,7 @@ class _ProfileListState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    futureProfile = CustomerClient.fetch('CUS-001');
+    futureProfile = CustomerClient.fetch(widget.id);
   }
 
   @override
@@ -67,18 +69,20 @@ class _ProfileListState extends State<Profile> {
                             color: Colors.grey[300],
                           ),
                         ),
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 50,
-                          backgroundImage: AssetImage('assets/profile_image.png'),
+                          backgroundImage:
+                              AssetImage('assets/profile_image.png'),
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(
                       customer.Nama_Customer,
-                      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 36, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -86,19 +90,23 @@ class _ProfileListState extends State<Profile> {
                         SizedBox(width: 5),
                         Text(
                           'Promo Poin : ${customer.Promo_Poin}',
-                          style: TextStyle(fontSize: 24,),
+                          style: const TextStyle(
+                            fontSize: 24,
+                          ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.attach_money, color: Colors.green),
-                        SizedBox(width: 5),
+                        const Icon(Icons.attach_money, color: Colors.green),
+                        const SizedBox(width: 5),
                         Text(
                           'Saldo : Rp ${customer.Saldo}',
-                          style: TextStyle(fontSize: 24,),
+                          style: const TextStyle(
+                            fontSize: 24,
+                          ),
                         ),
                       ],
                     ),

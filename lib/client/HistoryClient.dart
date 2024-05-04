@@ -6,6 +6,9 @@ class HistoryClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/detailPesanan';
 
+  // static final String url = '192.168.245.167';
+  // static final String endpoint = '/AtmaKitchen_API/public/api/pemesanan';
+
   static Future<List<History>> fetchAll() async {
     try {
       var response = await get(Uri.http(url, endpoint));

@@ -27,7 +27,6 @@ class History {
     ID_Pemesanan: json['ID_Pemesanan'],
   );
 
-
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
         'ID_Detail_Pesanan': ID_Detail_Pesanan,

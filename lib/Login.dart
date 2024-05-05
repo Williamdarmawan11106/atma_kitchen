@@ -32,28 +32,30 @@ class _LoginViewState extends State<LoginView> {
     Future<Customer?> searchData() async {
       try {
         print(usernameController.text);
-        Customer? data = await AuthClient.searchByName(usernameController.text);
+        Customer? data =
+            await AuthClient.searchByName(usernameController.text);
         print(data);
         return data;
       } catch (e) {
         print(e);
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Pengguna Tidak Ditemukan!'),
-                content: const Text(
-                    'Silahkan masukkan nama pengguna yang sudah terdaftar'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                ],
-              );
-            });
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Pengguna Tidak Ditemukan!'),
+              content: const Text(
+                  'Silahkan masukkan nama pengguna yang sudah terdaftar'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          },
+        );
         return null;
       }
     }
@@ -182,79 +184,60 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
                 const SizedBox(height: 32.0),
-                Column(
-                  children: [
-                    ElevatedButton(
-                      key: const Key('Masuk'),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          Customer? dataCus = await loginCus();
-                          Employee? dataEmp = await loginEmp();
-                          if (dataCus != null) {
-                            Customer customer = dataCus;
-                            String? idCustomer = customer.ID_Customer;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Login Berhasil!'),
+                ElevatedButton(
+                  key: const Key('Masuk'),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      Customer? dataCus = await loginCus();
+                      Employee? dataEmp = await loginEmp();
+                      if (dataCus != null) {
+                        Customer customer = dataCus;
+                        String? idCustomer = customer.ID_Customer;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Login Berhasil!'),
+                          ),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => Profile(id: idCustomer),
+                          ),
+                        );
+                      } else if (dataEmp != null) {
+                        print(dataEmp);
+                        print(dataEmp.ID_Jabatan);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Login Berhasil MO!'),
+                          ),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PresensiList(),
+                          ),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            key: const Key('gagal'),
+                            title: const Text('Username atau Password Salah'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
                               ),
-                            );
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => Profile(id: idCustomer)));
-                          } else if (dataEmp != null) {
-                            print(dataEmp);
-                            print(dataEmp.ID_Jabatan);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Login Berhasil MO!'),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
                               ),
-                            );
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const PresensiList()));
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                key: const Key('gagal'),
-                                title:
-                                    const Text('Username atau Password Salah'),
-                                actions: <Widget>[
-                                  TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'Cancel'),
-                                      child: const Text('Cancel')),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        }
+                            ],
+                          ),
+                        );
                       }
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          key: const Key('gagal'),
-                          title: const Text('Username atau Password Salah'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'OK'),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
                     }
                   },
                   child: Container(
@@ -272,7 +255,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.brown,
+                    primary: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -280,60 +263,62 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 SizedBox(height: 20),
                 TextButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Masukkan Nama Pengguna Anda'),
-                              content: TextField(
-                                controller: usernameController,
-                                decoration: const InputDecoration(
-                                    labelText: 'Nama Pengguna'),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pop(); // Close the dialog
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    print(usernameController.text);
-                                    Customer? customer = await searchData();
-                                    if (customer != null) {
-                                      await Resetpasswordclient.sendEmail(
-                                          customer.Nama_Customer);
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text(
-                                                  'Email Telah Terkirim ke Email Terdaftar Anda'),
-                                              content: const Text(
-                                                  'Silahkan konfirmasi pada email anda'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context)
-                                                        .pop(); // Close the dialog
-                                                  },
-                                                  child: const Text('Cancel'),
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    }
-                                  },
-                                  child: const Text('Submit'),
-                                ),
-                              ],
-                            );
-                          });
-                    },
-                    child: const Text('Ubah Kata Sandi')),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Masukkan Nama Pengguna Anda'),
+                          content: TextField(
+                            controller: usernameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Nama Pengguna',
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                print(usernameController.text);
+                                Customer? customer = await searchData();
+                                if (customer != null) {
+                                  await Resetpasswordclient.sendEmail(
+                                      customer.Nama_Customer);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Email Telah Terkirim ke Email Terdaftar Anda'),
+                                        content: const Text(
+                                            'Silahkan konfirmasi pada email anda'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              child: const Text('Submit'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Text('Ubah Kata Sandi'),
+                ),
               ],
             ),
           ),

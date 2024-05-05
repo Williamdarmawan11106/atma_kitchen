@@ -29,6 +29,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    // Function untuk melakukan pencarian data pengguna berdasarkan nama
     Future<Customer?> searchData() async {
       try {
         print(usernameController.text);
@@ -60,6 +61,7 @@ class _LoginViewState extends State<LoginView> {
       }
     }
 
+    // Function untuk login pengguna sebagai customer
     Future<Customer?> loginCus() async {
       try {
         Customer? data = await AuthClient.loginCust(
@@ -71,6 +73,7 @@ class _LoginViewState extends State<LoginView> {
       }
     }
 
+    // Function untuk login pengguna sebagai employee
     Future<Employee?> loginEmp() async {
       try {
         Employee? data = await AuthClient.loginEmp(
@@ -89,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -101,17 +104,19 @@ class _LoginViewState extends State<LoginView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.account_circle,
-                        size: 50,
-                        color: Colors.blue,
+                      CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Colors.transparent, // Transparent background
+                        backgroundImage: AssetImage('images/UI P3L.jpg'), 
+                        // Adjust fit property to prevent cropping
+                        // fit: BoxFit.cover, // Uncomment this line if necessary
                       ),
                       Text(
                         'Masuk',
                         style: TextStyle(
                           fontSize: 30,
                           color: Color.fromRGBO(0, 0, 0, 1.0),
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w500, fontFamily: AutofillHints.familyName,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -255,7 +260,7 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
+                    primary: Colors.brown,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -278,7 +283,7 @@ class _LoginViewState extends State<LoginView> {
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop(); // Close the dialog
+                                Navigator.of(context).pop(); 
                               },
                               child: const Text('Cancel'),
                             ),

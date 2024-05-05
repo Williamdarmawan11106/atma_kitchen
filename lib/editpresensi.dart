@@ -1,3 +1,4 @@
+import 'package:atma_kitchen/Presensi.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/entity/Presensi.dart';
 import 'package:atma_kitchen/client/PresensiClient.dart';
@@ -16,8 +17,8 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
   late TextEditingController _controllerTanggalKehadiran;
   late TextEditingController _controllerIDEmployee;
 
-  final List<int> statusOptions = [1, 0]; 
-  int selectedStatus = 1; 
+  final List<String> statusOptions = ['Hadir', 'Tidak Hadir']; 
+  late String selectedStatus; 
 
   @override
   void initState() {
@@ -25,7 +26,7 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
     _controllerIDPresensi = TextEditingController(text: widget.presensi.ID_Presensi);
     _controllerTanggalKehadiran = TextEditingController(text: widget.presensi.Tanggal_Kehadiran.toString());
     _controllerIDEmployee = TextEditingController(text: widget.presensi.ID_Employee);
-    selectedStatus = widget.presensi.Status_Kehadiran; 
+    selectedStatus = widget.presensi.Status_Kehadiran == 1 ? 'Hadir' : 'Tidak Hadir'; 
   }
 
   @override
@@ -65,17 +66,17 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
             ),
             SizedBox(height: 20),
             // Dropdown for selecting status
-            DropdownButtonFormField<int>(
+            DropdownButtonFormField<String>(
               value: selectedStatus,
               onChanged: (newValue) {
                 setState(() {
                   selectedStatus = newValue!;
                 });
               },
-              items: statusOptions.map<DropdownMenuItem<int>>((int value) {
-                return DropdownMenuItem<int>(
+              items: statusOptions.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value == 1 ? 'Hadir' : 'Tidak Hadir'),
+                  child: Text(value),
                 );
               }).toList(),
               decoration: InputDecoration(
@@ -87,6 +88,12 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
             ElevatedButton(
               onPressed: () {
                 _saveChanges(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PresensiList(),
+                  ),
+                );
               },
               child: Text('Save Changes'),
             ),
@@ -102,10 +109,12 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
       String newTanggalKehadiran = _controllerTanggalKehadiran.text;
       String newIDEmployee = _controllerIDEmployee.text;
 
+      int status = selectedStatus == 'Hadir' ? 1 : 0;
+
       Presensi updatedPresensi = Presensi(
         ID_Presensi: newIDPresensi,
         Tanggal_Kehadiran: DateTime.parse(newTanggalKehadiran),
-        Status_Kehadiran: selectedStatus,
+        Status_Kehadiran: status,
         ID_Employee: newIDEmployee,
       );
 
@@ -117,7 +126,7 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
         ),
       );
 
-      Navigator.pop(context);
+      // Navigator.pop(context);
     } catch (e) {
       print('Error while saving changes: $e');
       ScaffoldMessenger.of(context).showSnackBar(

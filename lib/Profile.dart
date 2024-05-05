@@ -4,7 +4,7 @@ import 'package:atma_kitchen/entity/Customer.dart';
 import 'HistoryPage.dart'; // Import file history_page.dart yang berisi halaman HistoryPage
 
 class Profile extends StatefulWidget {
-  const Profile({super.key, required this.id});
+  const Profile({Key? key, required this.id}) : super(key: key);
 
   final String? id;
 
@@ -26,17 +26,6 @@ class _ProfileListState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HistoryPage(id: widget.id,)),
-              );
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -54,63 +43,67 @@ class _ProfileListState extends State<Profile> {
               Customer customer = snapshot.data!;
               return Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
+                child: Card(
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[300],
-                          ),
-                        ),
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 50,
-                          backgroundImage:
-                              AssetImage('assets/profile_image.png'),
+                          backgroundColor: Colors.grey[300],
+                          backgroundImage: AssetImage('images/Profile.jpg'),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      customer.Nama_Customer,
-                      style: const TextStyle(
-                          fontSize: 36, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber),
-                        const SizedBox(width: 5),
+                        const SizedBox(height: 20),
                         Text(
-                          'Promo Poin : ${customer.Promo_Poin}',
+                          customer.Nama_Customer,
                           style: const TextStyle(
                             fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Promo Poin: ${customer.Promo_Poin}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.attach_money, color: Colors.green),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Saldo: Rp ${customer.Saldo}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HistoryPage(id: widget.id)),
+                            );
+                          },
+                          child: const Text('Lihat Riwayat'),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.attach_money, color: Colors.green),
-                        const SizedBox(width: 5),
-                        Text(
-                          'Saldo : Rp ${customer.Saldo}',
-                          style: const TextStyle(
-                            fontSize: 24,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               );
             },

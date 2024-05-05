@@ -4,10 +4,10 @@ import 'package:atma_kitchen/client/HistoryClient.dart';
 import 'package:atma_kitchen/client/SearchHistoryProductNameClient.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({super.key, required this.id});
+  const HistoryPage({Key? key, required this.id}) : super(key: key);
 
   final String? id;
-  
+
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
@@ -19,7 +19,6 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
     futureHistory = HistoryClient.fetchAll(widget.id);
-    print(futureHistory);
   }
 
   @override
@@ -48,21 +47,57 @@ class _HistoryPageState extends State<HistoryPage> {
           }
 
           List<History> historyList = snapshot.data!;
-          print(historyList);
-
           if (historyList.isEmpty) {
             return const Center(child: Text('No history for this customer'));
           }
 
-          return ListView.builder(
-            itemCount: historyList.length,
-            itemBuilder: (context, index) {
-              var history = historyList[index];
-              return ListTile(
-                title: Text('Nama Produk: ${history.Nama_Produk}'),
-                subtitle: Text('Total Amount: Rp ${history.Harga}'),
-              );
-            },
+          Map<String, List<History>> groupedHistory = {};
+          for (var history in historyList) {
+            if (!groupedHistory.containsKey(history.ID_Pemesanan)) {
+              groupedHistory[history.ID_Pemesanan] = [];
+            }
+            groupedHistory[history.ID_Pemesanan]!.add(history);
+          }
+
+          List<Widget> historyCards = [];
+          groupedHistory.forEach((id, historyItems) {
+            historyCards.add(
+              Card(
+                elevation: 3,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text(
+                        'ID Pemesanan: $id',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Divider(),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: historyItems.length,
+                      itemBuilder: (context, index) {
+                        var history = historyItems[index];
+                        return ListTile(
+                          title: Text('${history.Nama_Produk}'),
+                          subtitle: Text('Total Amount: Rp ${history.Harga}'),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+
+          return ListView(
+            children: historyCards,
           );
         },
       ),

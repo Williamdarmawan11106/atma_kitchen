@@ -4,6 +4,7 @@ import 'package:atma_kitchen/entity/Customer.dart';
 import 'package:atma_kitchen/Profile.dart';
 import 'package:atma_kitchen/Presensi.dart';
 import 'package:atma_kitchen/client/AuthClient.dart';
+import 'package:atma_kitchen/client/ResetPasswordClient.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -28,6 +29,35 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    Future<Customer?> searchData() async {
+      try {
+        print(usernameController.text);
+        Customer? data = await AuthClient.searchByName(usernameController.text);
+        print(data);
+        return data;
+      } catch (e) {
+        print(e);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Pengguna Tidak Ditemukan!'),
+                content: const Text(
+                    'Silahkan masukkan nama pengguna yang sudah terdaftar'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              );
+            });
+        return null;
+      }
+    }
+
     Future<Customer?> loginCus() async {
       try {
         Customer? data = await AuthClient.loginCust(
@@ -35,6 +65,23 @@ class _LoginViewState extends State<LoginView> {
         return data;
       } catch (e) {
         print(e);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text("Terjadi Kesalahan: $e"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
         return null;
       }
     }
@@ -46,6 +93,23 @@ class _LoginViewState extends State<LoginView> {
         return data;
       } catch (e) {
         print(e);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text("Terjadi Kesalahan: $e"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
         return null;
       }
     }
@@ -207,7 +271,57 @@ class _LoginViewState extends State<LoginView> {
                 SizedBox(height: 32.0),
                 TextButton(
                     onPressed: () {
-                      // pushToForgotPass(context);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Masukkan Nama Pengguna Anda'),
+                              content: TextField(
+                                controller: usernameController,
+                                decoration: const InputDecoration(
+                                    labelText: 'Nama Pengguna'),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(); // Close the dialog
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    print(usernameController.text);
+                                    Customer? customer = await searchData();
+                                    if (customer != null) {
+                                      await Resetpasswordclient.sendEmail(
+                                          customer.Nama_Customer);
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Email Telah Terkirim ke Email Terdaftar Anda'),
+                                              content: const Text(
+                                                  'Silahkan konfirmasi pada email anda'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    }
+                                  },
+                                  child: const Text('Submit'),
+                                ),
+                              ],
+                            );
+                          });
                     },
                     child: const Text('Ubah Kata Sandi')),
               ],

@@ -25,14 +25,14 @@ class _ProfileListState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         actions: [
           IconButton(
-            icon: Icon(Icons.history),
+            icon: const Icon(Icons.history),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HistoryPage()),
+                MaterialPageRoute(builder: (context) => HistoryPage(id: widget.id,)),
               );
             },
           ),
@@ -44,11 +44,11 @@ class _ProfileListState extends State<Profile> {
             future: futureProfile,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else if (!snapshot.hasData) {
-                return Text('No data available');
+                return const Text('No data available');
               }
 
               Customer customer = snapshot.data!;
@@ -86,8 +86,8 @@ class _ProfileListState extends State<Profile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.star, color: Colors.amber),
-                        SizedBox(width: 5),
+                        const Icon(Icons.star, color: Colors.amber),
+                        const SizedBox(width: 5),
                         Text(
                           'Promo Poin : ${customer.Promo_Poin}',
                           style: const TextStyle(

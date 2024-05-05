@@ -4,8 +4,10 @@ import 'package:atma_kitchen/client/HistoryClient.dart';
 import 'package:atma_kitchen/client/SearchHistoryProductNameClient.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+  const HistoryPage({super.key, required this.id});
 
+  final String? id;
+  
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
@@ -16,7 +18,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    futureHistory = HistoryClient.fetchAll();
+    futureHistory = HistoryClient.fetchAll(widget.id);
     print(futureHistory);
   }
 
@@ -27,7 +29,7 @@ class _HistoryPageState extends State<HistoryPage> {
         title: Text('History'),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               showSearchDialog(context);
             },
@@ -38,29 +40,27 @@ class _HistoryPageState extends State<HistoryPage> {
         future: futureHistory,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return Center(child: Text('No data available'));
+            return const Center(child: Text('No data available'));
           }
 
-          List<History> customerHistory = snapshot.data!
-              .where((history) =>
-                  history.ID_Customer == 'CUS-001')
-              .toList();
+          List<History> historyList = snapshot.data!;
+          print(historyList);
 
-          if (customerHistory.isEmpty) {
-            return Center(child: Text('No completed orders for this customer'));
+          if (historyList.isEmpty) {
+            return const Center(child: Text('No history for this customer'));
           }
 
           return ListView.builder(
-            itemCount: customerHistory.length,
+            itemCount: historyList.length,
             itemBuilder: (context, index) {
-              var history = customerHistory[index];
+              var history = historyList[index];
               return ListTile(
-                title: Text('Nama Produk: ${history.ID_Pemesanan}'),
-                subtitle: Text('Total Amount: Rp ${history.Harga_Pesanan}'),
+                title: Text('Nama Produk: ${history.Nama_Produk}'),
+                subtitle: Text('Total Amount: Rp ${history.Harga}'),
               );
             },
           );
@@ -74,13 +74,13 @@ class _HistoryPageState extends State<HistoryPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Search by Product Name"),
+          title: const Text("Search by Product Name"),
           content: TextField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Enter product name",
             ),
             onSubmitted: (productName) {
-              searchHistory(productName);
+              searchHistory(widget.id, productName);
               Navigator.pop(context);
             },
           ),
@@ -94,10 +94,10 @@ class _HistoryPageState extends State<HistoryPage> {
             TextButton(
               onPressed: () {
                 final productName = '';
-                searchHistory(productName);
+                searchHistory(widget.id, productName);
                 Navigator.pop(context);
               },
-              child: Text("Clear"),
+              child: const Text("Clear"),
             ),
           ],
         );
@@ -105,9 +105,9 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  void searchHistory(String productName) {
+  void searchHistory(String? id, String productName) {
     setState(() {
-      futureHistory = SearchHistoryProductNameClient.searchHistory(productName);
+      futureHistory = SearchHistoryProductNameClient.searchHistory(id, productName);
     });
   }
 }

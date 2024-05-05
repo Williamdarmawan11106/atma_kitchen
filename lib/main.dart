@@ -1,6 +1,4 @@
 import 'package:atma_kitchen/Login.dart';
-// import 'package:atma_kitchen/Presensi.dart';
-// import 'package:atma_kitchen/Profile.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,9 +12,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.brown, // Atur primary color menjadi brown
+        primarySwatch: Colors.brown, 
         hintColor:
-            Colors.brown.shade200, // Atur accent color menjadi brown muda
+            Colors.brown.shade200, 
       ),
       home: const LoginView(),
     );

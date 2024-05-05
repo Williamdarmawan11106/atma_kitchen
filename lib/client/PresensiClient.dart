@@ -6,9 +6,6 @@ class PresensiClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/api/presensi';
 
-  // static final String url = '192.168.245.167';
-  // static final String endpoint = '/AtmaKitchen_API/public/api/presensi';
-
   static Future<List<Presensi>> fetchAll() async {
     try {
       var response = await get(Uri.http(url, endpoint));

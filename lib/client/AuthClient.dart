@@ -23,8 +23,6 @@ class AuthClient {
   }
 
   static Future<Customer> loginCust(String nama, String password) async {
-    // static final String url = '192.168.245.167';
-    // static final String endpoint = '/AtmaKitchen_API/public/api/customer';
     try {
       var response = await post(Uri.http(url, "/api/loginCus"),
           headers: {"Content-Type": "application/json"},
@@ -40,8 +38,7 @@ class AuthClient {
   }
 
   static Future<dynamic> loginEmp(String nama, String password) async {
-    // static final String url = '192.168.245.167';
-    // static final String endpoint = '/AtmaKitchen_API/public/api/customer';
+
     try {
       var response = await post(Uri.http(url, "/api/loginEmp"),
           headers: {"Content-Type": "application/json"},
@@ -54,5 +51,6 @@ class AuthClient {
     } catch (e) {
       return Future.error(e.toString());
     }
+    
   }
 }

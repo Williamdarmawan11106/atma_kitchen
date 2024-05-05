@@ -16,9 +16,8 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
   late TextEditingController _controllerTanggalKehadiran;
   late TextEditingController _controllerIDEmployee;
 
-  // List of status options
-  final List<int> statusOptions = [1, 0]; // 1 for 'Hadir', 0 for 'Tidak Hadir'
-  int selectedStatus = 1; // Default selected status
+  final List<int> statusOptions = [1, 0]; 
+  int selectedStatus = 1; 
 
   @override
   void initState() {
@@ -26,7 +25,7 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
     _controllerIDPresensi = TextEditingController(text: widget.presensi.ID_Presensi);
     _controllerTanggalKehadiran = TextEditingController(text: widget.presensi.Tanggal_Kehadiran.toString());
     _controllerIDEmployee = TextEditingController(text: widget.presensi.ID_Employee);
-    selectedStatus = widget.presensi.Status_Kehadiran; // Set default status from Presensi object
+    selectedStatus = widget.presensi.Status_Kehadiran; 
   }
 
   @override

@@ -1,5 +1,5 @@
-import 'package:atma_kitchen/entity/Employee.dart';
 import 'package:flutter/material.dart';
+import 'package:atma_kitchen/entity/Employee.dart';
 import 'package:atma_kitchen/entity/Customer.dart';
 import 'package:atma_kitchen/Profile.dart';
 import 'package:atma_kitchen/Presensi.dart';
@@ -9,7 +9,7 @@ import 'package:atma_kitchen/client/ResetPasswordClient.dart';
 class LoginView extends StatefulWidget {
   final Map? data;
 
-  const LoginView({super.key, this.data});
+  const LoginView({Key? key, this.data}) : super(key: key);
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -91,69 +91,94 @@ class _LoginViewState extends State<LoginView> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    'Masuk',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Color.fromRGBO(0, 0, 0, 1.0),
-                      fontWeight: FontWeight.w500,
-                    ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.account_circle,
+                        size: 50,
+                        color: Colors.blue,
+                      ),
+                      Text(
+                        'Masuk',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Color.fromRGBO(0, 0, 0, 1.0),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Masuk menggunakan nama pengguna dan kata sandi yang telah terdaftar!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(0, 0, 0, 1.0),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 100.0),
-                  child: Text(
-                    'Masuk menggunakan nama pengguna \ndan kata sandi yang telah terdaftar!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color.fromRGBO(0, 0, 0, 1.0),
-                    ),
+                const SizedBox(height: 30),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.brown),
                   ),
-                ),
-                TextFormField(
-                  key: const Key('usernameField'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Nama Pengguna Tidak Boleh Kosong";
-                    }
-                    return null;
-                  },
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                      hintText: "Username",
-                      helperText: "Inputkan user yang telah didaftar",
-                      icon: Icon(Icons.person)),
-                ),
-                TextFormField(
-                  key: const Key("passwordField"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Password Tidak Boleh Kosong";
-                    }
-                    return null;
-                  },
-                  obscureText: _isObscured,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    helperText: "Inputkan Password",
-                    icon: const Icon(Icons.password),
-                    suffixIcon: IconButton(
-                      padding: const EdgeInsetsDirectional.only(end: 12.0),
-                      icon: _isObscured
-                          ? const Icon(Icons.visibility)
-                          : const Icon(Icons.visibility_off),
-                      onPressed: () {
-                        setState(() {
-                          _isObscured = !_isObscured;
-                        });
-                      },
-                    ),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        key: const Key('usernameField'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Nama Pengguna Tidak Boleh Kosong";
+                          }
+                          return null;
+                        },
+                        controller: usernameController,
+                        decoration: const InputDecoration(
+                          hintText: "Username",
+                          helperText: "Inputkan user yang telah didaftar",
+                          border: InputBorder.none,
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextFormField(
+                        key: const Key("passwordField"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Password Tidak Boleh Kosong";
+                          }
+                          return null;
+                        },
+                        obscureText: _isObscured,
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          helperText: "Inputkan Password",
+                          border: InputBorder.none,
+                          prefixIcon: Icon(Icons.password),
+                          suffixIcon: IconButton(
+                            padding: const EdgeInsetsDirectional.only(end: 12.0),
+                            icon: _isObscured
+                                ? const Icon(Icons.visibility)
+                                : const Icon(Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _isObscured = !_isObscured;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 32.0),
@@ -211,24 +236,49 @@ class _LoginViewState extends State<LoginView> {
                             );
                           }
                         }
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        child: const Center(
-                          child: Text(
-                            'Masuk',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
+                      }
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          key: const Key('gagal'),
+                          title: const Text('Username atau Password Salah'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
                             ),
-                          ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: const Center(
+                      child: Text(
+                        'Masuk',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
-                  ],
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.brown,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 32.0),
+                SizedBox(height: 20),
                 TextButton(
                     onPressed: () {
                       showDialog(

@@ -65,23 +65,6 @@ class _LoginViewState extends State<LoginView> {
         return data;
       } catch (e) {
         print(e);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text("Terjadi Kesalahan: $e"),
-              actions: <Widget>[
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
         return null;
       }
     }
@@ -93,23 +76,6 @@ class _LoginViewState extends State<LoginView> {
         return data;
       } catch (e) {
         print(e);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text("Terjadi Kesalahan: $e"),
-              actions: <Widget>[
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
         return null;
       }
     }
@@ -196,11 +162,9 @@ class _LoginViewState extends State<LoginView> {
                     ElevatedButton(
                       key: const Key('Masuk'),
                       onPressed: () async {
-                        // print(usernameController.text);
-                        // print(passwordController.text);
                         if (_formKey.currentState!.validate()) {
                           Customer? dataCus = await loginCus();
-                          print(dataCus);
+                          Employee? dataEmp = await loginEmp();
                           if (dataCus != null) {
                             Customer customer = dataCus;
                             String? idCustomer = customer.ID_Customer;
@@ -213,43 +177,39 @@ class _LoginViewState extends State<LoginView> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => Profile(id: idCustomer)));
-                          } else {
-                            Employee? dataEmp = await loginEmp();
+                          } else if (dataEmp != null) {
                             print(dataEmp);
-                            if (dataEmp != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Login Berhasil MO!'),
-                                ),
-                              );
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const PresensiList()));
-                            }
-                          }
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              key: const Key('gagal'),
-                              title: const Text('Username atau Password Salah'),
-                              // content: TextButton(
-                              //   onPressed: () => pushRegister(context),
-                              //   child: const Text('Daftar Disini !!'),
-                              // ),
-                              actions: <Widget>[
-                                TextButton(
+                            print(dataEmp.ID_Jabatan);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Login Berhasil MO!'),
+                              ),
+                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const PresensiList()));
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                key: const Key('gagal'),
+                                title:
+                                    const Text('Username atau Password Salah'),
+                                actions: <Widget>[
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'Cancel'),
+                                      child: const Text('Cancel')),
+                                  TextButton(
                                     onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel')),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, 'OK'),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ),
-                          );
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         }
                       },
                       child: Container(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:atma_kitchen/entity/Employee.dart';
 import 'package:atma_kitchen/entity/Customer.dart';
 import 'package:atma_kitchen/Profile.dart';
-import 'package:atma_kitchen/Presensi.dart';
+import 'package:atma_kitchen/PresensiPage.dart';
 import 'package:atma_kitchen/client/AuthClient.dart';
 import 'package:atma_kitchen/client/ResetPasswordClient.dart';
 

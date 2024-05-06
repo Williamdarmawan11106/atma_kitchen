@@ -1,4 +1,4 @@
-import 'package:atma_kitchen/Presensi.dart';
+import 'package:atma_kitchen/PresensiPage.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/entity/Presensi.dart';
 import 'package:atma_kitchen/client/PresensiClient.dart';
@@ -15,7 +15,7 @@ class EditPresensiPage extends StatefulWidget {
 class _EditPresensiPageState extends State<EditPresensiPage> {
   late TextEditingController _controllerIDPresensi;
   late TextEditingController _controllerTanggalKehadiran;
-  late TextEditingController _controllerIDEmployee;
+  late TextEditingController _controllerNamaEmployee;
 
   final List<String> statusOptions = ['Hadir', 'Tidak Hadir']; 
   late String selectedStatus; 
@@ -23,10 +23,10 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
   @override
   void initState() {
     super.initState();
-    _controllerIDPresensi = TextEditingController(text: widget.presensi.ID_Presensi);
-    _controllerTanggalKehadiran = TextEditingController(text: widget.presensi.Tanggal_Kehadiran.toString());
-    _controllerIDEmployee = TextEditingController(text: widget.presensi.ID_Employee);
-    selectedStatus = widget.presensi.Status_Kehadiran == 1 ? 'Hadir' : 'Tidak Hadir'; 
+    _controllerIDPresensi = TextEditingController(text: widget.presensi.id.toString());
+    _controllerTanggalKehadiran = TextEditingController(text: widget.presensi.tanggal_kehadiran.toString());
+    _controllerNamaEmployee = TextEditingController(text: widget.presensi.nama_employee);
+    selectedStatus = widget.presensi.status_kehadiran == 1 ? 'Hadir' : 'Tidak Hadir'; 
   }
 
   @override
@@ -58,9 +58,9 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
             ),
             SizedBox(height: 20),
             TextFormField(
-              controller: _controllerIDEmployee,
+              controller: _controllerNamaEmployee,
               decoration: InputDecoration(
-                labelText: 'ID Employee',
+                labelText: 'Nama Karyawan',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -107,15 +107,15 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
     try {
       String newIDPresensi = _controllerIDPresensi.text;
       String newTanggalKehadiran = _controllerTanggalKehadiran.text;
-      String newIDEmployee = _controllerIDEmployee.text;
+      String newNamaEmployee = _controllerNamaEmployee.text;
 
       int status = selectedStatus == 'Hadir' ? 1 : 0;
 
       Presensi updatedPresensi = Presensi(
-        ID_Presensi: newIDPresensi,
-        Tanggal_Kehadiran: DateTime.parse(newTanggalKehadiran),
-        Status_Kehadiran: status,
-        ID_Employee: newIDEmployee,
+        id: int.parse(newIDPresensi),
+        tanggal_kehadiran: DateTime.parse(newTanggalKehadiran),
+        status_kehadiran: status,
+        nama_employee: newNamaEmployee,
       );
 
       await PresensiClient.update(updatedPresensi);
@@ -126,7 +126,6 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
         ),
       );
 
-      // Navigator.pop(context);
     } catch (e) {
       print('Error while saving changes: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -141,7 +140,7 @@ class _EditPresensiPageState extends State<EditPresensiPage> {
   void dispose() {
     _controllerIDPresensi.dispose();
     _controllerTanggalKehadiran.dispose();
-    _controllerIDEmployee.dispose();
+    _controllerNamaEmployee.dispose();
     super.dispose();
   }
 }

@@ -1,10 +1,10 @@
+import 'package:atma_kitchen/entity/User.dart';
 import 'package:flutter/material.dart';
-import 'package:atma_kitchen/entity/Employee.dart';
-import 'package:atma_kitchen/entity/Customer.dart';
 import 'package:atma_kitchen/Profile.dart';
 import 'package:atma_kitchen/Presensi.dart';
 import 'package:atma_kitchen/client/AuthClient.dart';
 import 'package:atma_kitchen/client/ResetPasswordClient.dart';
+import 'package:flutter/widgets.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -19,6 +19,7 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   bool _isObscured = true;
 
   @override
@@ -30,12 +31,10 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     // Function untuk melakukan pencarian data pengguna berdasarkan nama
-    Future<Customer?> searchData() async {
+    Future<User?> searchData() async {
       try {
-        print(usernameController.text);
-        Customer? data =
-            await AuthClient.searchByName(usernameController.text);
-        print(data);
+        print(emailController.text);
+        User? data = await AuthClient.searchByEmail(emailController.text);
         return data;
       } catch (e) {
         print(e);
@@ -44,8 +43,8 @@ class _LoginViewState extends State<LoginView> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Pengguna Tidak Ditemukan!'),
-              content: const Text(
-                  'Silahkan masukkan nama pengguna yang sudah terdaftar'),
+              content:
+                  const Text('Silahkan masukkan email yang sudah terdaftar'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -62,21 +61,9 @@ class _LoginViewState extends State<LoginView> {
     }
 
     // Function untuk login pengguna sebagai customer
-    Future<Customer?> loginCus() async {
+    Future<User?> login() async {
       try {
-        Customer? data = await AuthClient.loginCust(
-            usernameController.text, passwordController.text);
-        return data;
-      } catch (e) {
-        print(e);
-        return null;
-      }
-    }
-
-    // Function untuk login pengguna sebagai employee
-    Future<Employee?> loginEmp() async {
-      try {
-        Employee? data = await AuthClient.loginEmp(
+        User? data = await AuthClient.login(
             usernameController.text, passwordController.text);
         return data;
       } catch (e) {
@@ -99,15 +86,16 @@ class _LoginViewState extends State<LoginView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
+                const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       CircleAvatar(
                         radius: 100,
-                        backgroundColor: Colors.transparent, // Transparent background
-                        backgroundImage: AssetImage('images/UI P3L.jpg'), 
+                        backgroundColor:
+                            Colors.transparent, // Transparent background
+                        backgroundImage: AssetImage('images/UI P3L.jpg'),
                         // Adjust fit property to prevent cropping
                         // fit: BoxFit.cover, // Uncomment this line if necessary
                       ),
@@ -116,12 +104,13 @@ class _LoginViewState extends State<LoginView> {
                         style: TextStyle(
                           fontSize: 30,
                           color: Color.fromRGBO(0, 0, 0, 1.0),
-                          fontWeight: FontWeight.w500, fontFamily: AutofillHints.familyName,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: AutofillHints.familyName,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                       Text(
-                        'Masuk menggunakan nama pengguna dan kata sandi yang telah terdaftar!',
+                        'Masuk menggunakan email dan kata sandi yang telah terdaftar!',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
@@ -133,7 +122,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 const SizedBox(height: 30),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.brown),
@@ -144,19 +133,19 @@ class _LoginViewState extends State<LoginView> {
                         key: const Key('usernameField'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Nama Pengguna Tidak Boleh Kosong";
+                            return "Email Tidak Boleh Kosong";
                           }
                           return null;
                         },
                         controller: usernameController,
                         decoration: const InputDecoration(
-                          hintText: "Username",
-                          helperText: "Inputkan user yang telah didaftar",
+                          hintText: "Email",
+                          helperText: "Inputkan email yang telah didaftar",
                           border: InputBorder.none,
                           prefixIcon: Icon(Icons.person),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextFormField(
                         key: const Key("passwordField"),
                         validator: (value) {
@@ -171,9 +160,10 @@ class _LoginViewState extends State<LoginView> {
                           hintText: "Password",
                           helperText: "Inputkan Password",
                           border: InputBorder.none,
-                          prefixIcon: Icon(Icons.password),
+                          prefixIcon: const Icon(Icons.password),
                           suffixIcon: IconButton(
-                            padding: const EdgeInsetsDirectional.only(end: 12.0),
+                            padding:
+                                const EdgeInsetsDirectional.only(end: 12.0),
                             icon: _isObscured
                                 ? const Icon(Icons.visibility)
                                 : const Icon(Icons.visibility_off),
@@ -193,42 +183,61 @@ class _LoginViewState extends State<LoginView> {
                   key: const Key('Masuk'),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      Customer? dataCus = await loginCus();
-                      Employee? dataEmp = await loginEmp();
-                      if (dataCus != null) {
-                        Customer customer = dataCus;
-                        String? idCustomer = customer.ID_Customer;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login Berhasil!'),
-                          ),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => Profile(id: idCustomer),
-                          ),
-                        );
-                      } else if (dataEmp != null) {
-                        print(dataEmp);
-                        print(dataEmp.ID_Jabatan);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login Berhasil MO!'),
-                          ),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const PresensiList(),
-                          ),
-                        );
+                      User? dataLogin = await login();
+                      print(dataLogin?.username);
+                      if (dataLogin?.active == '1') {
+                        if (dataLogin?.role == 'Customer') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Login Berhasil!'),
+                            ),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => Profile(id: dataLogin?.id),
+                            ),
+                          );
+                        } else if (dataLogin?.role == 'MO') {
+                          print(dataLogin?.role);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Login Berhasil MO!'),
+                            ),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PresensiList(),
+                            ),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              key: const Key('gagal'),
+                              title: const Text('Email atau Password Salah'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       } else {
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                             key: const Key('gagal'),
-                            title: const Text('Username atau Password Salah'),
+                            title: const Text('Pengguna Belum Terverifikasi!'),
+                            content: const Text('Silahkan Cek Email Anda'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () =>
@@ -245,9 +254,15 @@ class _LoginViewState extends State<LoginView> {
                       }
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.brown,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     child: const Center(
                       child: Text(
                         'Masuk',
@@ -259,41 +274,37 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.brown,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Masukkan Nama Pengguna Anda'),
+                          title: const Text(
+                              'Masukkan Email Anda yang Sudah Terdaftar'),
                           content: TextField(
-                            controller: usernameController,
+                            controller: emailController,
                             decoration: const InputDecoration(
-                              labelText: 'Nama Pengguna',
+                              labelText: 'Email',
                             ),
                           ),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop(); 
+                                Navigator.of(context).pop();
                               },
                               child: const Text('Cancel'),
                             ),
                             TextButton(
                               onPressed: () async {
-                                print(usernameController.text);
-                                Customer? customer = await searchData();
+                                print(emailController.text);
+                                User? customer = await searchData();
+                                print(customer?.email);
                                 if (customer != null) {
                                   await Resetpasswordclient.sendEmail(
-                                      customer.Nama_Customer);
+                                      customer.username);
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {

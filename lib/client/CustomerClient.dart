@@ -1,4 +1,5 @@
 import 'package:atma_kitchen/entity/Customer.dart';
+import 'package:atma_kitchen/entity/User.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 
@@ -9,14 +10,14 @@ class CustomerClient {
   // static final String url = '192.168.245.167';
   // static final String endpoint = '/AtmaKitchen_API/public/api/customer';
 
-  static Future<Customer> fetch(String? id) async {
+  static Future<User> fetch(int? id) async {
     try {
       var response = await get(Uri.http(url, '$endpoint/$id'));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
       var jsonData = json.decode(response.body)['data'];
-      return Customer.fromJson(jsonData);
+      return User.fromJson(jsonData);
     } catch (e) {
       return Future.error(e.toString());
     }

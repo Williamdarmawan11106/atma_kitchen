@@ -1,19 +1,19 @@
+import 'package:atma_kitchen/entity/User.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/client/CustomerClient.dart';
-import 'package:atma_kitchen/entity/Customer.dart';
 import 'HistoryPage.dart'; // Import file history_page.dart yang berisi halaman HistoryPage
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.id}) : super(key: key);
 
-  final String? id;
+  final int? id;
 
   @override
   _ProfileListState createState() => _ProfileListState();
 }
 
 class _ProfileListState extends State<Profile> {
-  late Future<Customer> futureProfile;
+  late Future<User> futureProfile;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _ProfileListState extends State<Profile> {
       ),
       body: SingleChildScrollView(
         child: Center(
-          child: FutureBuilder<Customer>(
+          child: FutureBuilder<User>(
             future: futureProfile,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -40,7 +40,7 @@ class _ProfileListState extends State<Profile> {
                 return const Text('No data available');
               }
 
-              Customer customer = snapshot.data!;
+              User customer = snapshot.data!;
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Card(
@@ -53,11 +53,12 @@ class _ProfileListState extends State<Profile> {
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.grey[300],
-                          backgroundImage: AssetImage('images/Profile.jpg'),
+                          backgroundImage:
+                              const AssetImage('images/Profile.jpg'),
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          customer.Nama_Customer,
+                          customer.username,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -70,7 +71,7 @@ class _ProfileListState extends State<Profile> {
                             const Icon(Icons.star, color: Colors.amber),
                             const SizedBox(width: 5),
                             Text(
-                              'Promo Poin: ${customer.Promo_Poin}',
+                              'Promo Poin: ${customer.promo_poin}',
                               style: const TextStyle(
                                 fontSize: 18,
                               ),
@@ -84,7 +85,7 @@ class _ProfileListState extends State<Profile> {
                             const Icon(Icons.attach_money, color: Colors.green),
                             const SizedBox(width: 5),
                             Text(
-                              'Saldo: Rp ${customer.Saldo}',
+                              'Saldo: Rp ${customer.saldo}',
                               style: const TextStyle(
                                 fontSize: 18,
                               ),
@@ -96,7 +97,9 @@ class _ProfileListState extends State<Profile> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => HistoryPage(id: widget.id)),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HistoryPage(id: widget.id)),
                             );
                           },
                           child: const Text('Lihat Riwayat'),

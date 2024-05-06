@@ -1,7 +1,7 @@
 import 'package:atma_kitchen/entity/User.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/Profile.dart';
-import 'package:atma_kitchen/Presensi.dart';
+import 'package:atma_kitchen/PresensiPage.dart';
 import 'package:atma_kitchen/client/AuthClient.dart';
 import 'package:atma_kitchen/client/ResetPasswordClient.dart';
 import 'package:flutter/widgets.dart';

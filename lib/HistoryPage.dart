@@ -53,10 +53,10 @@ class _HistoryPageState extends State<HistoryPage> {
 
           Map<String, List<History>> groupedHistory = {};
           for (var history in historyList) {
-            if (!groupedHistory.containsKey(history.id)) {
-              groupedHistory[history.id.toString()] = [];
+            if (!groupedHistory.containsKey(history.id_history)) {
+              groupedHistory[history.id_history.toString()] = [];
             }
-            groupedHistory[history.id]!.add(history);
+            groupedHistory[history.id_history]!.add(history);
           }
 
           List<Widget> historyCards = [];

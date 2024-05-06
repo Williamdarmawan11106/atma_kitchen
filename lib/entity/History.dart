@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 class History {
-  int id;
+  int id_history;
   String nama_produk;
   int jumlah;
   double harga;
   DateTime tanggal_diambil;
 
   History ({
-    required this.id,
+    required this.id_history,
     required this.nama_produk,
     required this.jumlah,
     required this.harga,
@@ -17,16 +17,16 @@ class History {
 
   factory History.fromRawJson(String str) => History.fromJson(json.decode(str));
   factory History.fromJson(Map<String, dynamic> json) => History(
-    id: int.parse(json['id'].toString()),
-    nama_produk: json['Nama_Produk'],
-    jumlah: json['Jumlah'],
+    id_history: int.parse(json['id'].toString()),
+    nama_produk: json['nama_produk'],
+    jumlah: json['jumlah'],
     harga: double.parse(json['harga'].toString()),
     tanggal_diambil: DateTime.parse(json['tanggal_diambil']),
   );
 
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
-        'id' : id, 
+        'id' : id_history, 
         'nama_produk': nama_produk,
         'jumlah': jumlah,
         'harga': harga,

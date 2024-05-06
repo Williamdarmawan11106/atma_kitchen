@@ -53,10 +53,10 @@ class _HistoryPageState extends State<HistoryPage> {
 
           Map<String, List<History>> groupedHistory = {};
           for (var history in historyList) {
-            if (!groupedHistory.containsKey(history.ID_Pemesanan)) {
-              groupedHistory[history.ID_Pemesanan] = [];
+            if (!groupedHistory.containsKey(history.id_history)) {
+              groupedHistory[history.id_history.toString()] = [];
             }
-            groupedHistory[history.ID_Pemesanan]!.add(history);
+            groupedHistory[history.id_history]!.add(history);
           }
 
           List<Widget> historyCards = [];
@@ -69,7 +69,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'ID Pemesanan: $id',
                         style: TextStyle(
@@ -78,17 +78,26 @@ class _HistoryPageState extends State<HistoryPage> {
                       ),
                     ),
                     Divider(),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: historyItems.length,
-                      itemBuilder: (context, index) {
-                        var history = historyItems[index];
-                        return ListTile(
-                          title: Text('${history.Nama_Produk}'),
-                          subtitle: Text('Total Amount: Rp ${history.Harga}'),
-                        );
-                      },
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: historyItems.length,
+                        itemBuilder: (context, index) {
+                          var history = historyItems[index];
+                          return ListTile(
+                            title: Text('${history.nama_produk}'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Total Amount: Rp ${history.harga}'),
+                                Text('Tanggal Pengambilan: ${history.tanggal_diambil}'),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

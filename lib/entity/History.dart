@@ -1,35 +1,35 @@
 import 'dart:convert';
 
 class History {
-  String ID_Pemesanan;
-  String Nama_Produk;
-  int Jumlah;
-  double Harga;
-  DateTime Tanggal_Pesanan;
+  int id_history;
+  String nama_produk;
+  int jumlah;
+  double harga;
+  DateTime tanggal_diambil;
 
   History ({
-    required this.ID_Pemesanan,
-    required this.Nama_Produk,
-    required this.Jumlah,
-    required this.Harga,
-    required this.Tanggal_Pesanan,
+    required this.id_history,
+    required this.nama_produk,
+    required this.jumlah,
+    required this.harga,
+    required this.tanggal_diambil,
   });
 
   factory History.fromRawJson(String str) => History.fromJson(json.decode(str));
   factory History.fromJson(Map<String, dynamic> json) => History(
-    ID_Pemesanan: json['ID_Pemesanan'],
-    Nama_Produk: json['Nama_Produk'],
-    Jumlah: json['Jumlah'],
-    Harga: double.parse(json['Harga'].toString()),
-    Tanggal_Pesanan: DateTime.parse(json['Tanggal_Pesanan']),
+    id_history: int.parse(json['id'].toString()),
+    nama_produk: json['nama_produk'],
+    jumlah: json['jumlah'],
+    harga: double.parse(json['harga'].toString()),
+    tanggal_diambil: DateTime.parse(json['tanggal_diambil']),
   );
 
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
-        'ID_Pemesanan' : ID_Pemesanan, 
-        'Nama_Produk': Nama_Produk,
-        'Jumlah': Jumlah,
-        'Harga': Harga,
-        'Tanggal_Pesanan': Tanggal_Pesanan.toIso8601String(),
+        'id' : id_history, 
+        'nama_produk': nama_produk,
+        'jumlah': jumlah,
+        'harga': harga,
+        'tanggal_diambil': tanggal_diambil.toIso8601String(),
       };
 }

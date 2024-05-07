@@ -15,16 +15,16 @@ class History {
     required this.tanggal_diambil,
   });
 
-  factory History.fromRawJson(String str) => History.fromJson(json.decode(str));
-  factory History.fromJson(Map<String, dynamic> json) => History(
-    id_history: int.parse(json['id'].toString()),
-    nama_produk: json['nama_produk'],
-    jumlah: json['jumlah'],
-    harga: double.parse(json['harga'].toString()),
-    tanggal_diambil: DateTime.parse(json['tanggal_diambil']),
-  );
+  factory History.fromJson(Map<String, dynamic> json) {
+    return History(
+      id_history: int.parse(json['id'].toString()),
+      nama_produk: json['nama_produk'] as String,
+      jumlah: int.parse(json['jumlah'].toString()),
+      harga: double.parse(json['harga'].toString()),
+      tanggal_diambil: DateTime.parse(json['tanggal_diambil'] as String),
+    );
+  }
 
-  String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
         'id' : id_history, 
         'nama_produk': nama_produk,

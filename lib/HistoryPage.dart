@@ -18,7 +18,8 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    // futureHistory = HistoryClient.fetchAll(widget.id);
+    futureHistory = HistoryClient.fetchAll(widget.id);
+    print(futureHistory);
   }
 
   @override
@@ -51,10 +52,10 @@ class _HistoryPageState extends State<HistoryPage> {
             return const Center(child: Text('No history for this customer'));
           }
 
-          Map<String, List<History>> groupedHistory = {};
+          Map<int, List<History>> groupedHistory = {};
           for (var history in historyList) {
             if (!groupedHistory.containsKey(history.id_history)) {
-              groupedHistory[history.id_history.toString()] = [];
+              groupedHistory[history.id_history] = [];
             }
             groupedHistory[history.id_history]!.add(history);
           }
@@ -124,7 +125,7 @@ class _HistoryPageState extends State<HistoryPage> {
               hintText: "Enter product name",
             ),
             onSubmitted: (productName) {
-              // searchHistory(widget.id, productName);
+              searchHistory(widget.id, productName);
               Navigator.pop(context);
             },
           ),
@@ -138,7 +139,7 @@ class _HistoryPageState extends State<HistoryPage> {
             TextButton(
               onPressed: () {
                 final productName = '';
-                // searchHistory(widget.id, productName);
+                searchHistory(widget.id, productName);
                 Navigator.pop(context);
               },
               child: const Text("Clear"),
@@ -149,10 +150,9 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  void searchHistory(String? id, String productName) {
+  void searchHistory(int? id, String productName) {
     setState(() {
-      futureHistory =
-          SearchHistoryProductNameClient.searchHistory(id, productName);
+      futureHistory = SearchHistoryProductNameClient.searchHistory(id, productName);
     });
   }
 }

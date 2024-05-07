@@ -1,4 +1,4 @@
-import 'package:atma_kitchen/entity/Customer.dart';
+
 import 'package:atma_kitchen/entity/User.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
@@ -23,17 +23,17 @@ class CustomerClient {
     }
   }
 
-  static Future<Response> update(Customer customer) async {
-    try {
-      var response = await put(
-          Uri.http(url, '$endpoint/${customer.ID_Customer}'),
-          headers: {"Content-Type": "application/json"},
-          body: customer.toRawJson());
+//   static Future<Response> update(Customer customer) async {
+//     try {
+//       var response = await put(
+//           Uri.http(url, '$endpoint/${customer.ID_Customer}'),
+//           headers: {"Content-Type": "application/json"},
+//           body: customer.toRawJson());
 
-      if (response.statusCode != 200) throw Exception(response.reasonPhrase);
-      return response;
-    } catch (e) {
-      return Future.error(e.toString());
-    }
-  }
+//       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
+//       return response;
+//     } catch (e) {
+//       return Future.error(e.toString());
+//     }
+//   }
 }

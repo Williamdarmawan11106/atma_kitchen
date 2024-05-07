@@ -6,7 +6,7 @@ class HistoryClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/api/history';
 
-  static Future<List<History>> fetchAll(String? id) async {
+  static Future<List<History>> fetchAll(int? id) async {
     try {
       var response = await get(Uri.http(url, '$endpoint/$id'));
 

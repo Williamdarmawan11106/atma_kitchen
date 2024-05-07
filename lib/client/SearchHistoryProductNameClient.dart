@@ -6,7 +6,7 @@ class SearchHistoryProductNameClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/api/detailPesanan/search';
 
-  static Future<List<History>> searchHistory(String? id, String nama) async {
+  static Future<List<History>> searchHistory(int? id, String nama) async {
     try {
       var response = await get(Uri.http(url, '$endpoint/$id/$nama'));
 

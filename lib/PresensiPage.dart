@@ -3,7 +3,7 @@ import 'package:atma_kitchen/client/PresensiClient.dart';
 import 'package:atma_kitchen/entity/Presensi.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
-import 'editpresensi.dart'; 
+import 'editpresensi.dart';
 
 class PresensiList extends StatefulWidget {
   const PresensiList({Key? key}) : super(key: key);
@@ -25,6 +25,12 @@ class _PresensiListState extends State<PresensiList> {
   @override
   void initState() {
     super.initState();
+    futurePresensiList = PresensiClient.fetchAll();
+    _generateAndRefreshPresensi();
+  }
+
+  void _generateAndRefreshPresensi() async {
+    await PresensiClient.generatePresensi();
     refresh();
   }
 
@@ -53,7 +59,11 @@ class _PresensiListState extends State<PresensiList> {
               child: FutureBuilder<List<Presensi>>(
                 future: futurePresensiList,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  } else if (snapshot.hasData) {
                     final presensiList = snapshot.data!;
                     final groupedPresensi = groupBy(presensiList, (Presensi presensi) => presensi.tanggal_kehadiran);
 
@@ -63,7 +73,7 @@ class _PresensiListState extends State<PresensiList> {
                       itemBuilder: (context, index) {
                         final tanggal = groupedPresensi.keys.elementAt(index);
                         final presensiByDate = groupedPresensi[tanggal]!;
-                        
+
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -96,11 +106,9 @@ class _PresensiListState extends State<PresensiList> {
                         );
                       },
                     );
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
+                  } else {
+                    return Text('No data available');
                   }
-
-                  return CircularProgressIndicator();
                 },
               ),
             ),

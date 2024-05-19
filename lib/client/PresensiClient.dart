@@ -1,6 +1,7 @@
 import 'package:atma_kitchen/entity/Presensi.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class PresensiClient {
   static final String url = '10.0.2.2:8000';
@@ -56,6 +57,22 @@ class PresensiClient {
       return response;
     } catch (e) {
       return Future.error(e.toString());
+    }
+  }
+
+  static Future<void> generatePresensi() async {
+    try {
+      var response = await post(
+        Uri.http(url, '$endpoint/generate-presensi'),
+      );
+
+      if (response.statusCode == 200) {
+        print('Presensi berhasil di-generate!');
+      } else {
+        throw Exception('Failed to generate presensi: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      print("Terjadi kesalahan saat memanggil generate presensi: $e");
     }
   }
 }

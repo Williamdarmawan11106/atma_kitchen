@@ -1,4 +1,4 @@
-import 'package:atma_kitchen/ProdukDashboardPage.dart';
+import 'package:atma_kitchen/DashboardPage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MainApp extends StatelessWidget {
         hintColor:
             Colors.brown.shade200, 
       ),
-      home: ProdukDashboardPage(),
+      home: DashboardScreen(),
     );
   }
 }

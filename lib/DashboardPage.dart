@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
         scaffoldBackgroundColor: Colors.grey[50], 
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.brown[600], 
+          backgroundColor: Color(0xFFF5DEB3), 
         ),
       ),
       home: Scaffold(
@@ -61,10 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   buildCarouselSlider(snapshot.data!.data),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: buildSectionTitle('Best Seller', 'Best Seller Product This Week!'),
-                  ),
+                  SizedBox(height: 24),
                   buildProductGrid(snapshot.data!.data),
                   buildPromoBanner(),
                   buildAboutUs(),
@@ -77,7 +74,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text("${snapshot.error}"));
           }
-
           return Center(child: CircularProgressIndicator());
         },
       ),
@@ -98,7 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return Container(
               width: MediaQuery.of(context).size.width,
               margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(color: Colors.amber),
+              decoration: BoxDecoration(color: Color(0xFFF5DEB3)),
               child: Image.network(product.gambar, fit: BoxFit.fill),
             );
           },
@@ -107,64 +103,82 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget buildSectionTitle(String title, String subtitle) {
-    return Column(
-      children: [
-        Text(title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        SizedBox(height: 8),
-        Text(subtitle, style: TextStyle(fontSize: 16, color: Colors.grey)),
-      ],
+  Widget buildProductGrid(List<PopulerItem> products) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+      color: Color(0xFFF5DEB3), 
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch, 
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+            child: Text(
+              'Best Seller',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, fontFamily: AutofillHints.countryName),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(height: 24),
+          Center( 
+            child: SizedBox(
+              width: double.infinity,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: products.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                itemBuilder: (context, index) {
+                  return buildProductItem(products[index]);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget buildProductGrid(List<PopulerItem> products) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: products.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-      itemBuilder: (context, index) {
-        return buildProductItem(products[index]);
-      },
-    );
-  }
 
   Widget buildProductItem(PopulerItem product) {
     return Card(
-      elevation: 4, // Memberikan sedikit bayangan ke card
-      child: SizedBox(
-        height: 200, // Tinggi tetap untuk setiap card produk
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Perataan tengah secara vertikal
-          crossAxisAlignment: CrossAxisAlignment.center, // Perataan tengah secara horizontal
-          children: [
-            Expanded(
-              child: Image.network(
-                product.gambar,
-                fit: BoxFit.cover,
+      elevation: 4,
+      color: Colors.white, 
+      child: Padding(
+        padding: const EdgeInsets.all(8.0), 
+        child: SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Image.network(
+                  product.gambar,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              product.nama,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center, // Perataan tengah teks
-            ),
-            Text(
-              'Rp ${product.harga.toStringAsFixed(0)}',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-              textAlign: TextAlign.center, // Perataan tengah teks
-            ),
-            IconButton(
-              icon: Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginView()),
-                );
-              },
-            ),
-          ],
+              SizedBox(height: 8),
+              Text(
+                product.nama,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'Rp ${product.harga.toStringAsFixed(0)}',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -173,19 +187,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildPromoBanner() {
     return Container(
       margin: EdgeInsets.all(16.0),
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset('images/produk/lapislegit.jpeg'),
-          Positioned(
-            bottom: 16,
-            left: 16,
+          AspectRatio(
+            aspectRatio: 16 / 9, 
+            child: Image.asset(
+              'images/produk/lapislegit.jpeg',
+              fit: BoxFit.cover, 
+            ),
+          ),
+          SizedBox(height: 16), 
+          Container(
+            padding: EdgeInsets.all(16.0),
+            color: Colors.brown.withOpacity(0.5), 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Treat Yourself Twice on Your Birthday', style: TextStyle(color: Colors.white, fontSize: 24)),
+                Text(
+                  'Treat Yourself Twice on Your Birthday',
+                  style: TextStyle(color: Colors.black, fontSize: 24),
+                ),
                 SizedBox(height: 8),
-                Text('Celebrate with us and earn double points on all purchases throughout your special week.',
-                    style: TextStyle(color: Colors.white)),
+                Text(
+                  'Celebrate with us and earn double points on all purchases throughout your special week.',
+                  style: TextStyle(color: Colors.black),
+                ),
               ],
             ),
           ),
@@ -194,9 +221,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+
+
   Widget buildAboutUs() {
     return Container(
       padding: EdgeInsets.all(16.0),
+      color: Colors.brown[100],
       child: Row(
         children: [
           Expanded(child: Image.asset('images/produk/lapislegit.jpeg')),
@@ -206,7 +236,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('About Us', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                SizedBox(height: 6),
                 Text(
                   "We're dedicated to crafting exceptional pastries and invigorating drinks using the finest ingredients. From indulgent treats to refreshing beverages, our menu promises a symphony of flavors. Join us for a delightful culinary journey at our bakery and beverage sanctuary.",
                 ),
@@ -250,6 +280,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildServices() {
     return Container(
       padding: EdgeInsets.all(16.0),
+      color: Colors.brown, 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -261,14 +292,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+
   Widget buildServiceItem(String title, String subtitle, IconData icon) {
     return Column(
       children: [
-        Icon(icon, size: 40),
+        Icon(icon, size: 40, color: Color(0xFFF5DEB3)),
         SizedBox(height: 8),
-        Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFF5DEB3))),
         SizedBox(height: 4),
-        Text(subtitle, textAlign: TextAlign.center),
+        Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: Color(0xFFF5DEB3)),),
       ],
     );
   }
@@ -307,7 +339,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Text('Instagram: @Atma_Kitchen'),
           Text('Twitter: @Atma_Kitchen'),
           SizedBox(height: 16),
-          Center(child: Text('© Copyright 2024 | Atma Kitchen')),
+          Container(
+            color: Colors.grey[800], 
+            padding: EdgeInsets.all(20.0), 
+            child: Center(
+              child: Text(
+                '© Copyright 2024 | Atma Kitchen',
+                style: TextStyle(color: Colors.white), // Warna teks putih
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  font_awesome_flutter: ^10.1.0  
   flutter_riverpod: ^2.4.10
   http: ^1.1.0
   intl: ^0.19.0
@@ -16,7 +17,8 @@ dependencies:
   google_fonts: ^6.2.0
   flutter_svg: ^0.22.0
   photo_view: ^0.14.0 
-
+  video_player: ^2.2.10
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -31,5 +33,9 @@ flutter:
     - images/produk/1715684494.jpg
     - images/produk/1715684310.jpg
     - images/produk/1715683458.jpg
+    - images/About_us.jpg
+    - images/Birthday.jpg
+    - images/Titipan.jpg
+  
 
   

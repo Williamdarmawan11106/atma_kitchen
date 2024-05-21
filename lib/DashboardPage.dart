@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:atma_kitchen/entity/Dashboard.dart';
 import 'package:atma_kitchen/client/DashboardClient.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:video_player/video_player.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,9 +17,9 @@ class MyApp extends StatelessWidget {
       title: 'Atma Kitchen',
       theme: ThemeData(
         primarySwatch: Colors.amber,
-        scaffoldBackgroundColor: Colors.grey[50], 
+        scaffoldBackgroundColor: Colors.grey[50],
         appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFFF5DEB3), 
+          backgroundColor: Color(0xFFF5DEB3),
         ),
       ),
       home: Scaffold(
@@ -49,9 +51,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Atma Kitchen'),
-      ),
       body: FutureBuilder<Dashboard>(
         future: futureDashboard,
         builder: (context, snapshot) {
@@ -60,6 +59,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 48.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFFFFEBCD), Color(0xFFF5DEB3)],
+                        ),
+                        borderRadius: BorderRadius.zero,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3), 
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Welcome to Atma Kitchen',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Raleway',
+                            color: Colors.black,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
                   buildCarouselSlider(snapshot.data!.data),
                   SizedBox(height: 24),
                   buildProductGrid(snapshot.data!.data),
@@ -81,52 +114,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget buildCarouselSlider(List<PopulerItem> products) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        autoPlay: true,
-        enlargeCenterPage: true,
-        aspectRatio: 2.0,
-        onPageChanged: (index, reason) {},
+    return Padding(
+      padding: EdgeInsets.only(top: 24.0), 
+      child: CarouselSlider(
+        options: CarouselOptions(
+          autoPlay: true,
+          enlargeCenterPage: true,
+          aspectRatio: 2.0,
+          onPageChanged: (index, reason) {},
+        ),
+        items: products.map((product) {
+          return Builder(
+            builder: (BuildContext context) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                decoration: BoxDecoration(color: Color(0xFFF5DEB3)),
+                child: Image.network(product.gambar, fit: BoxFit.fill),
+              );
+            },
+          );
+        }).toList(),
       ),
-      items: products.map((product) {
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(color: Color(0xFFF5DEB3)),
-              child: Image.network(product.gambar, fit: BoxFit.fill),
-            );
-          },
-        );
-      }).toList(),
     );
   }
 
+
   Widget buildProductGrid(List<PopulerItem> products) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-      color: Color(0xFFF5DEB3), 
+      padding: EdgeInsets.only(bottom: 16.0, right: 12.0, left: 12.0, top: 24.0),
+      color: Color(0xFFF5DEB3),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch, 
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Best Seller',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, fontFamily: AutofillHints.countryName),
+              'Our Best Seller Products',
+                style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Raleway',
+                color: Colors.black,
+                ),
               textAlign: TextAlign.center,
             ),
           ),
-          SizedBox(height: 24),
-          Center( 
+          SizedBox(height: 12),
+          Center(
             child: SizedBox(
               width: double.infinity,
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: products.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  mainAxisSpacing: 16.0,
+                  crossAxisSpacing: 16.0,
+                ),
                 itemBuilder: (context, index) {
                   return buildProductItem(products[index]);
                 },
@@ -138,13 +185,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget buildProductItem(PopulerItem product) {
     return Card(
       elevation: 4,
-      color: Colors.white, 
+      color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(8.0), 
+        padding: const EdgeInsets.all(0.0),
         child: SizedBox(
           height: 200,
           child: Column(
@@ -165,7 +211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               Text(
                 'Rp ${product.harga.toStringAsFixed(0)}',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
+                style: TextStyle(fontSize: 14, color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               IconButton(
@@ -186,27 +232,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget buildPromoBanner() {
     return Container(
-      margin: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 16 / 9, 
-            child: Image.asset(
-              'images/produk/lapislegit.jpeg',
-              fit: BoxFit.cover, 
+          Container(
+            width: double.infinity, 
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image.asset(
+                'images/Birthday.jpg',
+                fit: BoxFit.cover, 
+              ),
             ),
           ),
-          SizedBox(height: 16), 
           Container(
-            padding: EdgeInsets.all(16.0),
-            color: Colors.brown.withOpacity(0.5), 
+            width: double.infinity,
+            padding: EdgeInsets.all(24.0),
+            color: Color(0xFFF5DEB3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Treat Yourself Twice on Your Birthday',
-                  style: TextStyle(color: Colors.black, fontSize: 24),
+                  style: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
                 Text(
@@ -221,27 +269,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
-
   Widget buildAboutUs() {
     return Container(
       padding: EdgeInsets.all(16.0),
       color: Colors.brown[100],
-      child: Row(
+      child: Column(
         children: [
-          Expanded(child: Image.asset('images/produk/lapislegit.jpeg')),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('About Us', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                SizedBox(height: 6),
-                Text(
-                  "We're dedicated to crafting exceptional pastries and invigorating drinks using the finest ingredients. From indulgent treats to refreshing beverages, our menu promises a symphony of flavors. Join us for a delightful culinary journey at our bakery and beverage sanctuary.",
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 190, 
+                  child: Image.asset('images/About_us.jpg', fit: BoxFit.cover),
                 ),
-              ],
-            ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                  children: [
+                    Text('About Us', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 6),
+                    Text(
+                      "We're dedicated to crafting exceptional pastries and invigorating drinks using the finest ingredients. From indulgent treats to refreshing beverages, our menu promises a symphony of flavors. Join us for a delightful culinary journey at our bakery and beverage sanctuary.",
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -251,6 +307,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildPartnerProducts() {
     return Container(
       padding: EdgeInsets.all(16.0),
+      color: Color(0xFFF5DEB3),
       child: Row(
         children: [
           Expanded(
@@ -267,9 +324,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           SizedBox(width: 16),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Image.asset('images/produk/lapislegit.jpeg'),
+            child: Container(
+              height: 190, 
+              child: Image.asset('images/Titipan.jpg', fit: BoxFit.cover),
             ),
           ),
         ],
@@ -280,7 +337,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildServices() {
     return Container(
       padding: EdgeInsets.all(16.0),
-      color: Colors.brown, 
+      color: Colors.brown[100],
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -292,60 +349,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget buildServiceItem(String title, String subtitle, IconData icon) {
     return Column(
       children: [
-        Icon(icon, size: 40, color: Color(0xFFF5DEB3)),
+        Icon(icon, size: 40, color: Colors.black),
         SizedBox(height: 8),
-        Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFF5DEB3))),
+        Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 94, 40, 20))),
         SizedBox(height: 4),
-        Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: Color(0xFFF5DEB3)),),
+        Text(subtitle, textAlign: TextAlign.center, style: TextStyle(color: const Color.fromARGB(255, 94, 40, 20))),
       ],
     );
   }
 
   Widget buildFooter() {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.only(top: 16.0),
       color: Colors.grey.shade200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Contact Us', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          Text('Phone: 081-123-456-7891'),
-          Text('Email: cust.serv@atmakitch.com'),
-          Text('Address: Jl. Babarsari No. 123, Yogyakarta'),
-          SizedBox(height: 16),
-          Text('Navigation', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          Text('Products'),
-          Text('About Us'),
-          Text('Our Service'),
-          Text('Login'),
-          Text('Register'),
-          SizedBox(height: 16),
-          Text('Categories', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          Text('Cake'),
-          Text('Bread'),
-          Text('Beverage'),
-          Text('Hampers'),
-          SizedBox(height: 16),
-          Text('Follow Us', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          Text('Facebook: Atma_Kitchen'),
-          Text('Instagram: @Atma_Kitchen'),
-          Text('Twitter: @Atma_Kitchen'),
+          Container(
+            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+            color: Colors.grey.shade200,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Contact Us',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Text('Phone: 081-123-456-7891'),
+                SizedBox(height: 4),
+                Text('Email: cust.serv@atmakitch.com'),
+                SizedBox(height: 4),
+                Text('Address: Jl. Babarsari No. 123, Yogyakarta'),
+              ],
+            ),
+          ),
           SizedBox(height: 16),
           Container(
-            color: Colors.grey[800], 
-            padding: EdgeInsets.all(20.0), 
+            padding: EdgeInsets.all(16.0),
+            color: Colors.grey.shade200,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Follow Us',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(height: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        FaIcon(FontAwesomeIcons.instagram, color: Colors.pink),
+                        SizedBox(width: 8),
+                        Text('@Atma_Kitchen'),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        FaIcon(FontAwesomeIcons.facebook, color: Colors.blue),
+                        SizedBox(width: 8),
+                        Text('@Atma_Kitchen'),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        FaIcon(FontAwesomeIcons.twitter, color: Colors.lightBlue),
+                        SizedBox(width: 8),
+                        Text('@Atma_Kitchen'),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
+          Container(
+            color: Colors.brown[100],
+            width: double.infinity,
+            padding: EdgeInsets.all(20.0),
             child: Center(
               child: Text(
                 '© Copyright 2024 | Atma Kitchen',
-                style: TextStyle(color: Colors.white), // Warna teks putih
+                style: TextStyle(color: Colors.black),
               ),
             ),
           ),
@@ -354,3 +453,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
+

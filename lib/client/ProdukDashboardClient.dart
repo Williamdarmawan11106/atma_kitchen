@@ -15,7 +15,7 @@ class ProdukDashboardClient {
       }
 
       var jsonData = json.decode(response.body);
-      return ProdukDashboard.fromJson(jsonData);
+      return ProdukDashboard.fromJson(jsonData['data']);
     } catch (e) {
       throw Exception(e.toString());
     }

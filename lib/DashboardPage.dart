@@ -1,4 +1,5 @@
 import 'package:atma_kitchen/Login.dart';
+import 'package:atma_kitchen/ProdukDashboardPage.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:atma_kitchen/entity/Dashboard.dart';
@@ -51,6 +52,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: FlexibleSpaceBar(
+          background: Image.asset(
+            'images/UI P3L.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
       body: FutureBuilder<Dashboard>(
         future: futureDashboard,
         builder: (context, snapshot) {
@@ -60,7 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 48.0),
+                    padding: EdgeInsets.only(top: 0),
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -151,12 +160,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'Our Best Seller Products',
-                style: TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Raleway',
                 color: Colors.black,
-                ),
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -179,6 +188,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 },
               ),
             ),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProdukDashboardPage()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Color.fromARGB(255, 233, 142, 68), 
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+              elevation: 4,
+            ),
+            child: Text('All Products', style: TextStyle(color: Colors.black)),
           ),
         ],
       ),
@@ -272,7 +296,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildAboutUs() {
     return Container(
       padding: EdgeInsets.all(16.0),
-      color: Colors.brown[100],
+      color: Colors.white,
       child: Column(
         children: [
           Row(
@@ -337,7 +361,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget buildServices() {
     return Container(
       padding: EdgeInsets.all(16.0),
-      color: Colors.brown[100],
+      color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -369,8 +393,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-            color: Colors.grey.shade200,
+            width: double.infinity,
+            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 140.0, bottom: 16.0),
+            color: Color(0xFFF5DEB3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -438,7 +463,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           SizedBox(height: 16),
           Container(
-            color: Colors.brown[100],
+            color: Color(0xFFF5DEB3),
             width: double.infinity,
             padding: EdgeInsets.all(20.0),
             child: Center(

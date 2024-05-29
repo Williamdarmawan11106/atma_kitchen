@@ -1,7 +1,7 @@
 import 'package:atma_kitchen/entity/User.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/Profile.dart';
-import 'package:atma_kitchen/PresensiPage.dart';
+import 'package:atma_kitchen/DashboardMOPage.dart';
 import 'package:atma_kitchen/client/AuthClient.dart';
 import 'package:atma_kitchen/client/ResetPasswordClient.dart';
 import 'package:flutter/widgets.dart';
@@ -47,7 +47,7 @@ class _LoginViewState extends State<LoginView> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop(); 
                   },
                   child: const Text('Cancel'),
                 ),
@@ -59,7 +59,6 @@ class _LoginViewState extends State<LoginView> {
       }
     }
 
-    // Function untuk login pengguna sebagai customer
     Future<User?> login() async {
       try {
         User? data = await AuthClient.login(
@@ -93,10 +92,8 @@ class _LoginViewState extends State<LoginView> {
                       CircleAvatar(
                         radius: 100,
                         backgroundColor:
-                            Colors.transparent, // Transparent background
+                            Colors.transparent, 
                         backgroundImage: AssetImage('images/UI P3L.jpg'),
-                        // Adjust fit property to prevent cropping
-                        // fit: BoxFit.cover, // Uncomment this line if necessary
                       ),
                       Text(
                         'Masuk',
@@ -207,7 +204,7 @@ class _LoginViewState extends State<LoginView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const PresensiList(),
+                              builder: (_) => DashboardMOPage(),
                             ),
                           );
                         } else {

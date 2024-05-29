@@ -1,7 +1,8 @@
 import 'package:atma_kitchen/entity/User.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/client/CustomerClient.dart';
-import 'HistoryPage.dart'; // Import file history_page.dart yang berisi halaman HistoryPage
+import 'HistoryPage.dart'; 
+import 'package:atma_kitchen/PenarikanSaldoPage.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.id}) : super(key: key);
@@ -103,6 +104,17 @@ class _ProfileListState extends State<Profile> {
                             );
                           },
                           child: const Text('Lihat Riwayat'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PenarikanSaldoPage(id: widget.id)),
+                            );
+                          },
+                          child: const Text('Tarik Saldo'),
                         ),
                       ],
                     ),

@@ -30,7 +30,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    // Function untuk melakukan pencarian data pengguna berdasarkan nama
     Future<User?> searchData() async {
       try {
         print(emailController.text);

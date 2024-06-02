@@ -3,7 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:atma_kitchen/entity/BahanBaku.dart';
-import 'package:atma_kitchen/client/BahanBakuClient.dart';
+import 'package:atma_kitchen/client/PenggunaanBahanBakuClient.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 void main() {
@@ -14,19 +14,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: PdfReportPage(),
+      home: PdfReportPagePengunaanBahanBaku(),
     );
   }
 }
 
-class PdfReportPage extends StatefulWidget {
+class PdfReportPagePengunaanBahanBaku extends StatefulWidget {
   @override
   _PdfReportPageState createState() => _PdfReportPageState();
 }
 
-class _PdfReportPageState extends State<PdfReportPage> {
+class _PdfReportPageState extends State<PdfReportPagePengunaanBahanBaku> {
   bool _isLoading = false;
   String? _pdfPath;
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
 
   Future<void> generatePdfReport() async {
     setState(() {
@@ -35,9 +37,16 @@ class _PdfReportPageState extends State<PdfReportPage> {
 
     try {
       final pdf = pw.Document();
-      final List<BahanBaku> bahanBakuList = await BahanBakuClient.fetch();
       final date = DateTime.now();
       final formattedDate = "${date.day}-${date.month}-${date.year}";
+
+      final data = await PenggunaanBahanBakuClient.fetch(
+        _startDateController.text,
+        _endDateController.text,
+      );
+
+      final List<BahanBaku> bahanBakuList = data['bahanBakus'];
+      final Map<String, int> bahanBakuUsage = data['bahanBakuUsage'];
 
       pdf.addPage(
         pw.Page(
@@ -48,16 +57,17 @@ class _PdfReportPageState extends State<PdfReportPage> {
                 pw.Text('Atma Kitchen', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
                 pw.Text('Jl. Centralpark No. 10 Yogyakarta', style: pw.TextStyle(fontSize: 12)),
                 pw.SizedBox(height: 20),
-                pw.Text('LAPORAN Stok Bahan Baku', style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                pw.Text('LAPORAN Penggunaan Bahan Baku', style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
                 pw.Text('Tanggal cetak: $formattedDate', style: pw.TextStyle(fontSize: 12)),
+                pw.Text('Periode: ${_startDateController.text} - ${_endDateController.text}', style: pw.TextStyle(fontSize: 12)),
                 pw.SizedBox(height: 20),
                 pw.Table.fromTextArray(
-                  headers: ['Nama Bahan', 'Satuan', 'Stok'],
+                  headers: ['Nama Bahan', 'Satuan', 'Jumlah Digunakan'],
                   data: bahanBakuList.map((bahanBaku) {
                     return [
                       bahanBaku.nama_bahan_baku,
                       bahanBaku.satuan_bahan_baku,
-                      bahanBaku.stok_bahan_baku.toString(),
+                      bahanBakuUsage[bahanBaku.id.toString()]?.toString() ?? '0',
                     ];
                   }).toList(),
                 ),
@@ -68,7 +78,7 @@ class _PdfReportPageState extends State<PdfReportPage> {
       );
 
       final output = await getTemporaryDirectory();
-      final file = File("${output.path}/stok_bahan_baku.pdf");
+      final file = File("${output.path}/penggunaan_bahan_baku.pdf");
       await file.writeAsBytes(await pdf.save());
 
       setState(() {
@@ -80,6 +90,7 @@ class _PdfReportPageState extends State<PdfReportPage> {
         MaterialPageRoute(builder: (context) => PdfViewerPage(pdfPath: _pdfPath!)),
       );
     } catch (e) {
+      print('Error: $e'); 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to generate PDF: $e')),
       );
@@ -99,9 +110,26 @@ class _PdfReportPageState extends State<PdfReportPage> {
       body: Center(
         child: _isLoading
             ? CircularProgressIndicator()
-            : ElevatedButton(
-                onPressed: generatePdfReport,
-                child: Text('Generate PDF'),
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: _startDateController,
+                    decoration: InputDecoration(
+                      labelText: 'Tanggal Mulai (YYYY-MM-DD)',
+                    ),
+                  ),
+                  TextField(
+                    controller: _endDateController,
+                    decoration: InputDecoration(
+                      labelText: 'Tanggal Selesai (YYYY-MM-DD)',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: generatePdfReport,
+                    child: Text('Generate PDF'),
+                  ),
+                ],
               ),
       ),
     );

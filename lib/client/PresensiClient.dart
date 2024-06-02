@@ -1,7 +1,6 @@
 import 'package:atma_kitchen/entity/Presensi.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:http/http.dart' as http;
 
 class PresensiClient {
   static final String url = '10.0.2.2:8000';

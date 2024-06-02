@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/PresensiPage.dart';
 import 'package:atma_kitchen/GenerateLaporanBahanBakuPage.dart';
+import 'package:atma_kitchen/GenerateLaporanPemasukanPengeluaranBulananPage.dart';
+import 'package:atma_kitchen/GenerateLaporanPenggunaanBahanBaku.dart';
 
 class DashboardMOPage extends StatelessWidget {
   @override
@@ -21,6 +23,24 @@ class DashboardMOPage extends StatelessWidget {
                 );
               },
               child: Text('Generate Laporan Bahan Baku'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PdfReportPagePengunaanBahanBaku()),
+                );
+              },
+              child: Text('Generate Laporan Penggunaan Bahan Baku'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GeneratePengeluaranPemasukanBulanan()),
+                );
+              },
+              child: Text('Generate Laporan Pengeluaran Pemasukan Bulanan'),
             ),
             SizedBox(height: 20),
             ElevatedButton(

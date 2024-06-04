@@ -1,8 +1,11 @@
+import 'package:atma_kitchen/StatusPesananCustomerPage.dart';
+import 'package:atma_kitchen/client/StatusPesananCustomerClient.dart';
 import 'package:atma_kitchen/entity/User.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/client/CustomerClient.dart';
 import 'HistoryPage.dart'; 
 import 'package:atma_kitchen/PenarikanSaldoPage.dart';
+import 'package:atma_kitchen/StatusPesananCustomerPage.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.id}) : super(key: key);
@@ -104,6 +107,17 @@ class _ProfileListState extends State<Profile> {
                             );
                           },
                           child: const Text('Lihat Riwayat'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      OrderStatusPage(id: widget.id!, apiClient: ApiClient())),
+                            );
+                          },
+                          child: const Text('Lihat Status Pesanan'),
                         ),
                         ElevatedButton(
                           onPressed: () {

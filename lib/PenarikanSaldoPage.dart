@@ -21,12 +21,19 @@ class _PenarikanSaldoPageState extends State<PenarikanSaldoPage> {
   String _selectedBank = '';
   double _customerSaldo = 0.0;
 
+  final _formKey = GlobalKey<FormState>();
+  final _nominalController = TextEditingController();
+  final _rekeningController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _customerId = widget.id!;
     _fetchPenarikanSaldo();
     _fetchCustomerDetails();
+
+    // Ambil saldo pengguna saat initState
+    _fetchUserSaldo();
   }
 
   Future<void> _fetchPenarikanSaldo() async {
@@ -63,6 +70,25 @@ class _PenarikanSaldoPageState extends State<PenarikanSaldoPage> {
     }
   }
 
+  Future<void> _fetchUserSaldo() async {
+    try {
+      var customer = await CustomerClient.fetch(_customerId);
+      setState(() {
+        _customerSaldo = customer.saldo;
+
+        // Setel nilai awal untuk _nominalController dengan saldo pengguna
+        _nominalController.text = _customerSaldo.toString();
+      });
+    } catch (e) {
+      setState(() {
+        _isCustomerLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load customer data: $e')),
+      );
+    }
+  }
+
   Future<void> _createPenarikanSaldo() async {
     try {
       int noRekening = int.parse(_rekeningController.text);
@@ -81,6 +107,10 @@ class _PenarikanSaldoPageState extends State<PenarikanSaldoPage> {
 
       if (createdPenarikanSaldo != null) {
         await _fetchPenarikanSaldo();
+        // Setel saldo pengguna menjadi 0 setelah penarikan berhasil
+        setState(() {
+          _customerSaldo = 0.0;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Successfully created')),
         );
@@ -94,10 +124,6 @@ class _PenarikanSaldoPageState extends State<PenarikanSaldoPage> {
       );
     }
   }
-
-  final _formKey = GlobalKey<FormState>();
-  final _nominalController = TextEditingController();
-  final _rekeningController = TextEditingController();
 
   void _showCreateDialog() {
     showDialog(
@@ -198,7 +224,7 @@ class _PenarikanSaldoPageState extends State<PenarikanSaldoPage> {
           backgroundColor: Colors.amber,
           child: Icon(Icons.money, color: Colors.white),
         ),
-        title: Text('Nominal: ${penarikanSaldo.nominal_penarikan}'),
+        title: Text('Nominal: ${penarikanSaldo      .nominal_penarikan}'),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -284,3 +310,4 @@ class _PenarikanSaldoPageState extends State<PenarikanSaldoPage> {
     );
   }
 }
+

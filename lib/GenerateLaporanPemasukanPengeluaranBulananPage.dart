@@ -247,6 +247,16 @@ class _GeneratePengeluaranPemasukanBulananState
     );
   }
 
+  Future<void> _downloadPdf(String pdfPath) async {
+    final downloadPath = await getExternalStorageDirectory();
+    final pdfFile = File(pdfPath);
+    final newFile = await pdfFile.copy('${downloadPath!.path}/laporan_pemasukan_pengeluaran.pdf');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('PDF downloaded successfully')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -260,6 +270,18 @@ class _GeneratePengeluaranPemasukanBulananState
                 onPressed: _showMonthPicker,
                 child: Text('Generate PDF'),
               ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (_pdfPath != null) {
+            _downloadPdf(_pdfPath!);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('PDF not generated yet')),
+            );
+          }
+        },
+        child: Icon(Icons.download),
       ),
     );
   }
@@ -284,3 +306,4 @@ class PdfViewerPage extends StatelessWidget {
     );
   }
 }
+

@@ -85,9 +85,8 @@ class _PdfReportPageState extends State<PdfReportPagePengunaanBahanBaku> {
         _pdfPath = file.path;
       });
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PdfViewerPage(pdfPath: _pdfPath!)),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('PDF generated successfully')),
       );
     } catch (e) {
       print('Error: $e'); 
@@ -99,6 +98,16 @@ class _PdfReportPageState extends State<PdfReportPagePengunaanBahanBaku> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _downloadPdf() async {
+    final downloadPath = await getExternalStorageDirectory();
+    final pdfFile = File(_pdfPath!);
+    final newFile = await pdfFile.copy('${downloadPath!.path}/penggunaan_bahan_baku.pdf');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('PDF downloaded successfully')),
+    );
   }
 
   @override
@@ -129,6 +138,29 @@ class _PdfReportPageState extends State<PdfReportPagePengunaanBahanBaku> {
                     onPressed: generatePdfReport,
                     child: Text('Generate PDF'),
                   ),
+                  SizedBox(height: 20),
+                  _pdfPath != null
+                      ? Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PdfViewerPage(pdfPath: _pdfPath!),
+                                  ),
+                                );
+                              },
+                              child: Text('View PDF'),
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: _downloadPdf,
+                              child: Text('Download PDF'),
+                            ),
+                          ],
+                        )
+                      : SizedBox(),
                 ],
               ),
       ),

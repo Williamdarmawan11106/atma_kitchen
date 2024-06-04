@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:atma_kitchen/entity/BahanBaku.dart';
 import 'package:atma_kitchen/client/PenggunaanBahanBakuClient.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -100,14 +101,26 @@ class _PdfReportPageState extends State<PdfReportPagePengunaanBahanBaku> {
     }
   }
 
-  Future<void> _downloadPdf() async {
-    final downloadPath = await getExternalStorageDirectory();
-    final pdfFile = File(_pdfPath!);
-    final newFile = await pdfFile.copy('${downloadPath!.path}/penggunaan_bahan_baku.pdf');
+  void _downloadPdf(String pdfPath) async {
+    if (await Permission.storage.request().isGranted) {
+      try {
+        final downloadPath = Directory('/storage/emulated/0/Download');
+        final pdfFile = File(pdfPath);
+        final newFile = await pdfFile.copy('${downloadPath.path}/laporan_penggunaan_bahanbaku.pdf');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('PDF downloaded successfully')),
-    );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('PDF downloaded successfully to Downloads')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to download PDF: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission is required to download the PDF')),
+      );
+    }
   }
 
   @override
@@ -155,7 +168,7 @@ class _PdfReportPageState extends State<PdfReportPagePengunaanBahanBaku> {
                             ),
                             SizedBox(height: 10),
                             ElevatedButton(
-                              onPressed: _downloadPdf,
+                              onPressed: () async => _downloadPdf(_pdfPath!),
                               child: Text('Download PDF'),
                             ),
                           ],

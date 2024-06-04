@@ -28,7 +28,7 @@ class DashboardMOPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PdfReportPagePengunaanBahanBaku()),
+                  MaterialPageRoute(builder: (context) => PdfReportPagePengunaanBahanBaku()), 
                 );
               },
               child: Text('Generate Laporan Penggunaan Bahan Baku'),

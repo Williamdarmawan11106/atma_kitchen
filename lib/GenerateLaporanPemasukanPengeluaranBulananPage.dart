@@ -3,6 +3,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:atma_kitchen/client/PemasukanPengeluaranBulananClient.dart';
 
@@ -82,91 +83,87 @@ class _GeneratePengeluaranPemasukanBulananState
   pw.Widget buildPdfContent(Map<String, dynamic> data, int selectedMonth, int selectedYear, String formattedDate) {
     final monthName = DateFormat('MMMM').format(DateTime(selectedYear, selectedMonth));
 
-    List<pw.TableRow> tableRows = [];
+    // Build Pemasukan Table
+    final pemasukanTable = pw.Table(
+      border: pw.TableBorder.all(),
+      children: [
+        pw.TableRow(
+          children: [
+            pw.Text('Pemasukan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text('Nominal', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Total Tip', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            pw.Text(data['pemasukan']['totalTip'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Total Penjualan', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            pw.Text(data['pemasukan']['totalPenjualan'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Total Pemasukan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text(data['pemasukan']['totalPemasukan'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          ],
+        ),
+      ],
+    );
 
-    // Header Row
-    tableRows.add(pw.TableRow(
+    // Build Pengeluaran Table
+    final pengeluaranTable = pw.Table(
+      border: pw.TableBorder.all(),
       children: [
-        pw.Text('Pemasukan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        pw.Text('Nominal', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        pw.TableRow(
+          children: [
+            pw.Text('Pengeluaran', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text('Nominal', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          ],
+        ),
+        ...data['pengeluaran']['pengeluaranLainnya'].map<pw.TableRow>((item) {
+          return pw.TableRow(
+            children: [
+              pw.Text(item['nama_pengeluaran'], style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+              pw.Text(item['biaya'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            ],
+          );
+        }).toList(),
+        pw.TableRow(
+          children: [
+            pw.Text('Total Pengeluaran Lainnya', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            pw.Text(data['pengeluaran']['totalPengeluaranLainnya'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Total Gaji', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            pw.Text(data['pengeluaran']['totalGaji'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Pembelian Bahan Baku', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            pw.Text(data['pengeluaran']['pembelianBahanBaku'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Grand Total Penitip', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+            pw.Text(data['pengeluaran']['grandTotalPenitip'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
+          ],
+        ),
+        pw.TableRow(
+          children: [
+            pw.Text('Total Pengeluaran', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text(data['pengeluaran']['totalPengeluaran'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          ],
+        ),
       ],
-    ));
-
-    // Pemasukan Rows
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Total Tip', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        pw.Text(data['pemasukan']['totalTip'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-      ],
-    ));
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Total Penjualan', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        pw.Text(data['pemasukan']['totalPenjualan'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-      ],
-    ));
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Total Pemasukan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        pw.Text(data['pemasukan']['totalPemasukan'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-      ],
-    ));
-
-    // Empty Row for Separation
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.SizedBox(height: 10),
-        pw.SizedBox(height: 10),
-      ],
-    ));
-
-    // Pengeluaran Header Row
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Pengeluaran', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        pw.Text('Nominal', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-      ],
-    ));
-
-    // Pengeluaran Rows
-    data['pengeluaran']['pengeluaranLainnya'].forEach((item) {
-      tableRows.add(pw.TableRow(
-        children: [
-          pw.Text(item['nama_pengeluaran'], style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-          pw.Text(item['biaya'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        ],
-      ));
-    });
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Total Pengeluaran Lainnya', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        pw.Text(data['pengeluaran']['totalPengeluaranLainnya'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-      ],
-    ));
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Total Gaji', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        pw.Text(data['pengeluaran']['totalGaji'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-      ],
-    ));
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Pembelian Bahan Baku', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        pw.Text(data['pengeluaran']['pembelianBahanBaku'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-      ],
-    ));
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Grand Total Penitip', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-        pw.Text(data['pengeluaran']['grandTotalPenitip'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
-      ],
-    ));
-    tableRows.add(pw.TableRow(
-      children: [
-        pw.Text('Total Pengeluaran', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-        pw.Text(data['pengeluaran']['totalPengeluaran'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-      ],
-    ));
+    );
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -179,82 +176,104 @@ class _GeneratePengeluaranPemasukanBulananState
         pw.Text('Tahun: $selectedYear', style: pw.TextStyle(fontWeight: pw.FontWeight.normal)),
         pw.Text('Tanggal cetak: $formattedDate', style: pw.TextStyle(fontSize: 12)),
         pw.SizedBox(height: 20),
-        pw.Table(
-          border: pw.TableBorder.all(),
-          children: tableRows,
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Expanded(child: pemasukanTable),
+            pw.SizedBox(width: 20),
+            pw.Expanded(child: pengeluaranTable),
+          ],
         ),
       ],
     );
   }
 
-  void _showMonthPicker() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Month and Year'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButton<int>(
-                value: _selectedMonth,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedMonth = value!;
-                  });
+    void _showMonthPicker() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Select Month and Year'),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DropdownButton<int>(
+                      value: _selectedMonth,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedMonth = value!;
+                        });
+                      },
+                      items: List.generate(12, (index) {
+                        return DropdownMenuItem<int>(
+                          value: index + 1,
+                          child: Text('${DateFormat('MMMM').format(DateTime(0, index + 1))}'),
+                        );
+                      }),
+                    ),
+                    SizedBox(height: 10),
+                    DropdownButton<int>(
+                      value: _selectedYear,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedYear = value!;
+                        });
+                      },
+                      items: List.generate(10, (index) {
+                        return DropdownMenuItem<int>(
+                          value: DateTime.now().year - 5 + index,
+                          child: Text('${DateTime.now().year - 5 + index}'),
+                        );
+                      }),
+                    ),
+                  ],
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
                 },
-                items: List.generate(12, (index) {
-                  return DropdownMenuItem<int>(
-                    value: index + 1,
-                    child: Text('${DateFormat('MMMM').format(DateTime(0, index + 1))}'),
-                  );
-                }),
+                child: Text('Cancel'),
               ),
-              SizedBox(height: 10),
-              DropdownButton<int>(
-                value: _selectedYear,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedYear = value!;
-                  });
+              TextButton(
+                onPressed: () {
+                  generatePdfReport(_selectedMonth, _selectedYear);
+                  Navigator.pop(context);
                 },
-                items: List.generate(10, (index) {
-                  return DropdownMenuItem<int>(
-                    value: DateTime.now().year - 5 + index,
-                    child: Text('${DateTime.now().year - 5 + index}'),
-                  );
-                }),
+                child: Text('Generate'),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                generatePdfReport(_selectedMonth, _selectedYear);
-                Navigator.pop(context);
-              },
-              child: Text('Generate'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+          );
+        },
+      );
+    }
+
+
 
   Future<void> _downloadPdf(String pdfPath) async {
-    final downloadPath = await getExternalStorageDirectory();
-    final pdfFile = File(pdfPath);
-    final newFile = await pdfFile.copy('${downloadPath!.path}/laporan_pemasukan_pengeluaran.pdf');
+    if (await Permission.storage.request().isGranted) {
+      try {
+        final downloadPath = Directory('/storage/emulated/0/Download');
+        final pdfFile = File(pdfPath);
+        final newFile = await pdfFile.copy('${downloadPath.path}/laporan_pemasukan_pengeluaran.pdf');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('PDF downloaded successfully')),
-    );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('PDF downloaded successfully to Downloads')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to download PDF: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission is required to download the PDF')),
+      );
+    }
   }
 
   @override

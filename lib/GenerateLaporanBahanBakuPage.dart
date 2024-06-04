@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:atma_kitchen/entity/BahanBaku.dart';
 import 'package:atma_kitchen/client/BahanBakuClient.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 void main() {
   runApp(MyApp());
@@ -91,13 +93,39 @@ class _PdfReportPageState extends State<PdfReportPage> {
   }
 
   Future<void> _downloadPdf(String pdfPath) async {
-    final downloadPath = await getExternalStorageDirectory();
-    final pdfFile = File(pdfPath);
-    final newFile = await pdfFile.copy('${downloadPath!.path}/stok_bahan_baku.pdf');
+    if (await Permission.storage.request().isGranted) {
+      try {
+        final downloadPath = await _getDownloadDirectory();
+        final pdfFile = File(pdfPath);
+        final newFile = await pdfFile.copy('${downloadPath.path}/stok_bahan_baku.pdf');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('PDF downloaded successfully')),
-    );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('PDF downloaded successfully')),
+        );
+      } catch (e) {
+        print('Failed to save PDF: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save PDF: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission denied')),
+      );
+    }
+  }
+
+  Future<Directory> _getDownloadDirectory() async {
+    if (Platform.isAndroid) {
+      final directory = Directory('/storage/emulated/0/Download');
+      if (await directory.exists()) {
+        return directory;
+      } else {
+        throw Exception('Could not find the download directory');
+      }
+    } else {
+      return await getApplicationDocumentsDirectory();
+    }
   }
 
   @override

@@ -30,7 +30,11 @@ class _PresensiListState extends State<PresensiList> {
   }
 
   void _generateAndRefreshPresensi() async {
-    await PresensiClient.generatePresensi();
+    try {
+      await PresensiClient.generatePresensi();
+    } catch (e) {
+      print('Terjadi kesalahan saat memanggil generate presensi: $e');
+    }
     refresh();
   }
 

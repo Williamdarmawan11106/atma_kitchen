@@ -1,6 +1,6 @@
-import 'package:atma_kitchen/entity/Presensi.dart';
 import 'dart:convert';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:atma_kitchen/entity/Presensi.dart';
 
 class PresensiClient {
   static final String url = '10.0.2.2:8000';
@@ -8,7 +8,7 @@ class PresensiClient {
 
   static Future<List<Presensi>> fetchAll() async {
     try {
-      var response = await get(Uri.http(url, endpoint));
+      var response = await http.get(Uri.http(url, endpoint));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
@@ -21,7 +21,7 @@ class PresensiClient {
 
   static Future<List<Presensi>> searchByEmployeeName(String namaKaryawan) async {
     try {
-      var response = await get(Uri.http(url, '$endpoint/$namaKaryawan'));
+      var response = await http.get(Uri.http(url, '$endpoint/$namaKaryawan'));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 
@@ -32,9 +32,9 @@ class PresensiClient {
     }
   }
 
-  static Future<Response> create(Presensi presensi) async {
+  static Future<http.Response> create(Presensi presensi) async {
     try {
-      var response = await post(Uri.http(url, endpoint),
+      var response = await http.post(Uri.http(url, endpoint),
           headers: {"Content-Type": "application/json"},
           body: presensi.toRawJson());
 
@@ -45,9 +45,9 @@ class PresensiClient {
     }
   }
 
-  static Future<Response> update(Presensi presensi) async {
+  static Future<http.Response> update(Presensi presensi) async {
     try {
-      var response = await put(
+      var response = await http.put(
           Uri.http(url, '$endpoint/${presensi.id}'), 
           headers: {"Content-Type": "application/json"},
           body: json.encode(presensi.toJson())); 
@@ -60,18 +60,22 @@ class PresensiClient {
   }
 
   static Future<void> generatePresensi() async {
-    try {
-      var response = await post(
-        Uri.http(url, '$endpoint/generate-presensi'),
-      );
+      try {
+        var response = await http.post(
+          Uri.http(url, '$endpoint/generate-presensi'),
+          headers: {"Content-Type": "application/json"},
+        );
 
-      if (response.statusCode == 200) {
-        print('Presensi berhasil di-generate!');
-      } else {
-        throw Exception('Failed to generate presensi: ${response.reasonPhrase}');
+        if (response.statusCode == 200) {
+          print('Presensi berhasil di-generate!');
+        } else {
+          print('Response status code: ${response.statusCode}');
+          print('Response body: ${response.body}');
+          throw Exception('Failed to generate presensi: ${response.reasonPhrase}');
+        }
+      } catch (e) {
+        print("Terjadi kesalahan saat memanggil generate presensi: $e");
       }
-    } catch (e) {
-      print("Terjadi kesalahan saat memanggil generate presensi: $e");
-    }
   }
+
 }
